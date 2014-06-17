@@ -247,3 +247,95 @@ var poiEditorView = Backbone.View.extend({
     }
 
 });
+
+
+
+//коллекция Poi
+var poiAppCollection = Backbone.Collection.extend({
+
+    initialize: function(){
+        this.createMap();
+        this.fetchPois();
+        this.domEvents();
+    },
+
+    domEvents: function(){
+        $('.b-toggle__editor').on('click', $.proxy(this.listenMapClick, this));
+    },
+
+    createMap: function(){
+        var mapOptions = {
+            zoom: 2,
+            center: new google.maps.LatLng(0, 0)
+        };
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    },
+
+    listenMapClick: function(){
+        var self = this;
+        this.listener = google.maps.event.addListener(map, 'click', function(event) {
+            self.createNewModel(event.latLng);
+            self.stopListenMapClick();
+        });
+    },
+
+    stopListenMapClick: function(){
+        google.maps.event.removeListener(this.listener);
+    },
+
+
+//    загрузка Poi с хранилища
+    fetchPois: function(){
+        if(localStorage.getItem('PoiStorage')){
+            var PoiList = JSON.parse(localStorage.getItem('PoiStorage'));
+            for(var i=0; i<PoiList.length; i++){
+                var newModel = new poiModel({
+                    title: JSON.parse(localStorage.getItem('PoiStorage'))[i].title,
+                    description: JSON.parse(localStorage.getItem('PoiStorage'))[i].description,
+                    location: new google.maps.LatLng(JSON.parse(localStorage.getItem('PoiStorage'))[i].positionK, JSON.parse(localStorage.getItem('PoiStorage'))[i].positionA),
+                    id: JSON.parse(localStorage.getItem('PoiStorage'))[i].id
+                });
+
+                var PoiView = new poiMapView({model:newModel});
+                var PoiListView = new poiListView({model:newModel});
+                var PoiEditorView = new poiEditorView({model:newModel});
+                this.add(newModel);
+            }
+        }
+    },
+
+//    создание новой Poi
+    createNewModel: function(location){
+        var newModelId = 0;
+
+        if(JSON.parse(localStorage.getItem('PoiStorage'))) {
+            newModelId = +localStorage.getItem('PoiStorageId') + 1;
+            localStorage.setItem('PoiStorageId', newModelId);
+        }
+
+        var newModel = new poiModel({
+            id: newModelId,
+            location: new google.maps.LatLng(location.k, location.A),
+            title: 'New POI ' + newModelId,
+            positionK: location.k,
+            positionA: location.A,
+            animation: false
+        });
+
+        newModel.save({
+            id: newModelId,
+            title: 'New POI ' + newModelId,
+            positionK: location.k,
+            positionA: location.A
+        });
+
+        var PoiView = new poiMapView({model:newModel});
+        var PoiListView = new poiListView({model:newModel});
+        var PoiEditorView = new poiEditorView({model:newModel});
+        this.add(newModel);
+    }
+
+
+});
+
+var App = new poiAppCollection;
