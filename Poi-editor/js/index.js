@@ -66,3 +66,78 @@ var poiModel = Backbone.Model.extend({
 
 
 });
+
+
+
+//представление Poi на карте
+var poiMapView = Backbone.View.extend({
+    el: '.h-map',
+    template: _.template($('#poi-map__template').html()),
+
+    initialize: function(){
+        this.createMarker();
+        this.model.bind("change", this.updateMarker, this);
+        this.model.bind("destroy", this.destroyMarker, this);
+    },
+
+    createMarker: function(model){
+
+
+//        этот self меня тоже не устраивает, но другого не придумал для google.maps.event
+//        $.proxy не помогло
+
+        var self = this;
+
+        this.marker = new google.maps.Marker({
+            position: this.model.get('location'),
+            map: map,
+            draggable: true
+        });
+
+
+        this.infoWindow = new google.maps.InfoWindow({
+            content: this.template(this.model)
+        });
+
+        google.maps.event.addListener(this.marker, 'click', function() {
+            self.model.set({animation: true});
+            self.infoWindow.open(map, self.marker);
+        });
+        google.maps.event.addListener(self.infoWindow,'closeclick',function(){
+            self.model.set({animation: false});
+        });
+
+        google.maps.event.addListener(this.marker, 'dragend', function(event) {
+            self.model.set({
+                location: event.latLng,
+                positionK: event.latLng.k,
+                positionA: event.latLng.A
+            });
+        })
+    },
+
+    updateMarker: function(model){
+
+        var positionK = this.model.get('positionK') || this.model.get('location').k;
+        var positionA = this.model.get('positionA') || this.model.get('location').A;
+        var latlng = new google.maps.LatLng(positionK, positionA);
+        this.marker.setPosition(latlng);
+
+        if(this.infoWindow) this.infoWindow.close();
+
+        this.infoWindow.content = this.template(model);
+
+        if(this.model.get('animation')){
+            this.marker.setAnimation(google.maps.Animation.BOUNCE);
+        } else {
+            this.marker.setAnimation(null);
+        }
+
+    },
+
+    destroyMarker: function(){
+        this.marker.setMap(null);
+    }
+
+
+});
