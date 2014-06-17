@@ -1,0 +1,114 @@
+html,
+body{
+	height: 100%;
+}
+body{
+	margin:0;
+	color:#000;
+	font:12px/15px Arial, Helvetica, sans-serif;
+	background:#fff;
+	min-width:960px;
+}
+img{
+	border-style:none;
+	vertical-align:top;
+}
+a{text-decoration:none;}
+a:hover{text-decoration:underline;}
+a:active{background-color:transparent;}
+input,
+textarea,
+select{
+	font:100% Arial, Helvetica, sans-serif;
+	vertical-align:middle;
+	color:#000;
+}
+form,fieldset{
+	margin:0;
+	padding:0;
+	border-style:none;
+}
+.g-hide{ display: none;}
+.h-wrapper,
+.h-map{
+	height: 100%;
+}
+.b-poi__list__holder{
+    position: absolute;
+    z-index: 9999;
+    right: 10px;
+    top: 0;
+	padding: 25px 0;
+	box-sizing: border-box;
+    height: 100%;
+	font:12px/15px Arial, Helvetica, sans-serif;
+}
+.b-poi__list{
+    overflow: auto;
+    max-height: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: #fff;
+}
+.b-poi__list__frame{
+    padding: 5px 10px;
+    border: 1px solid #000;
+}
+.b-poi__list__frame.animate{
+	border-color: #f00;
+	background-color: #ffe4e1;
+}
+.b-poi__title{
+    margin: 0;
+	font:12px/15px Arial, Helvetica, sans-serif;
+}
+.b-map__info__title{
+	font:15px/18px Arial, Helvetica, sans-serif;
+}
+.b-poi-editor{
+    position: absolute;
+    z-index: 9999;
+    right: 210px;
+    top: 0;
+    width: 222px;
+    padding: 30px;
+    background-color: #fff;
+    border: 1px solid #000;
+}
+.b-map__info{
+	width: 200px;
+	padding: 10px;
+}
+.b-toggle__editor{
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    padding: 20px;
+	cursor: pointer;
+}
+.b-edit__holder{
+	overflow: hidden;
+    text-align: right;
+}
+.b-edit{
+	float: left;
+    font-size: 10px;
+    line-height: 12px;
+    color: #aaa;
+    cursor: pointer;
+}
+.b-delete{
+	float: right;
+	font-size: 10px;
+	line-height: 12px;
+	color: #aaa;
+	cursor: pointer;
+}
+.edit__description{
+    margin: 0 0 10px;
+    padding: 0;
+    width: 220px;
+    height: 50px;
+}
