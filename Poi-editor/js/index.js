@@ -195,3 +195,55 @@ var poiListView = Backbone.View.extend({
 
 
 });
+
+
+
+//представление Poi в окне редактирования
+var poiEditorView = Backbone.View.extend({
+
+    tagName: 'div',
+    className: 'b-poi-editor',
+    template: _.template($('#poi-editor__template').html()),
+
+//  почему не работает?
+//    events: {
+//        'click .b-saveEdit': 'saveModel',
+//        'click .b-closeEdit': 'closeEditor'
+//    },
+
+    initialize: function(){
+        this.model.bind("change", this.render, this);
+        this.model.bind("destroy", this.closeEditor, this);
+    },
+
+    domEvents: function(){
+        $('.b-saveEdit').on('click', $.proxy(this.saveModel, this));
+        $('.b-closeEdit').on('click', $.proxy(this.closeEditor, this));
+    },
+
+    render: function(){
+
+        this.$el.remove();
+
+        if(this.model.get('edit')){
+            $('.b-poi__list').append(this.$el.html(this.template(this.model)));
+        }
+        this.domEvents();
+
+    },
+
+    closeEditor: function(){
+        this.model.set({
+            edit: false,
+            animation: false
+        });
+    },
+
+    saveModel: function(){
+        this.model.set({
+            title: this.$el.find('.edit__title').val(),
+            description: this.$el.find('.edit__description').val()
+        });
+    }
+
+});
