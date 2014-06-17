@@ -141,3 +141,57 @@ var poiMapView = Backbone.View.extend({
 
 
 });
+
+
+
+//представление Poi в списке
+var poiListView = Backbone.View.extend({
+
+    tagName: 'li',
+    className: 'b-poi__list__frame',
+    template: _.template($('#poi-list__template').html()),
+
+    events:{
+        'click .b-edit': 'openEditor',
+        'click .b-delete': 'destroy'
+    },
+
+    initialize: function(){
+        this.create();
+        this.model.bind("change", this.render, this);
+        this.model.bind("destroy", this.destroyView, this);
+    },
+
+    destroy: function(){
+        if(confirm()){
+            this.model.destroy();
+        }
+    },
+
+    destroyView: function(){
+        this.$el.remove();
+    },
+
+    create: function(){
+        $('.b-poi__list').append(this.$el.html(this.template(this.model)));
+    },
+
+    render: function(){
+        this.$el.html(this.template(this.model));
+
+        if(this.model.get('animation')){
+            this.$el.addClass('animate');
+        } else {
+            this.$el.removeClass('animate');
+        }
+    },
+
+    openEditor: function(){
+        this.model.set({
+            edit : true,
+            animation : true
+        });
+    }
+
+
+});
