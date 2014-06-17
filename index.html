@@ -1,49 +1,55 @@
 <!DOCTYPE html>
-<html>
-
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Poi-editor : Test work" />
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Poi-editor</title>
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/vvasilik/Poi-editor">View on GitHub</a>
-
-          <h1 id="project_title">Poi-editor</h1>
-          <h2 id="project_tagline">Test work</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/vvasilik/Poi-editor/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/vvasilik/Poi-editor/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8">
+	<title>try</title>
+	<link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" />
+</head>
+<body>
+    <div id="wrapper" class="h-wrapper">
+        <div id="map" class="h-map"></div>
+        <div class="b-poi__list__holder">
+            <ul class="b-poi__list"></ul>
+        </div>
+        <button class="b-toggle__editor">Добавить точку</button>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <p>Welcome to my POI-Test page!</p>
-      </section>
-    </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Poi-editor maintained by <a href="https://github.com/vvasilik">vvasilik</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
 
-    
+    <script type="text/template" id="poi-map__template">
+        <div class="b-map__info">
+            <h2 class="b-map__info__title"><strong><%= this.model.get('title') %></strong></h2>
+            <p><%= this.model.get('description') %></p>
+        </div>
+    </script>
 
-  </body>
+    <script type="text/template" id="poi-list__template">
+        <h2 class="b-poi__title"><%= this.model.get('title') %></h2>
+        <div class="b-edit__holder">
+            <span class="b-edit">редактировать</span>
+            <span class="b-delete">удалить</span>
+        </div>
+    </script>
+
+
+    <script type="text/template" id="poi-editor__template">
+        <h2>Заголовок</h2>
+        <input class="edit__title" value="<%= this.model.get('title') %>" type="text"/>
+        <h2>Описание</h2>
+        <textarea class="edit__description" placeholder="Добавьте описание"><%= this.model.get('description') %></textarea>
+        <button class="b-saveEdit">Сохранить</button>
+        <button class="b-closeEdit">Закрыть</button>
+    </script>
+
+
+
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script>
+
+    </script>
+<script type="text/javascript" src="javascripts/jquery.js"></script>
+<script type="text/javascript" src="javascripts/underscore.js"></script>
+<script type="text/javascript" src="javascripts/backbone.js"></script>
+<script type="text/javascript" src="javascripts/index.js"></script>
+</body>
 </html>
