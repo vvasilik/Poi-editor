@@ -2,68 +2,11 @@
 
 var poiModel = Backbone.Model.extend({
 
-    defaults:{
-        title: 'New POI',
-        description: '',
-        positionK: '',
-        positionA: '',
-        edit : false,
-        animation : false
-    },
-
     initialize: function(){
-        this.bind("change", this.update);
+        this.listenTo(this, "change", this.saveModel);
     },
 
-    save: function(model){
-
-        var PoiStorage = [];
-
-        if(localStorage.getItem('PoiStorage')) {
-            PoiStorage = JSON.parse(localStorage.getItem('PoiStorage'));
-        }
-
-        PoiStorage.push({
-            id: model.id,
-            title: model.title || this.get('title'),
-            description: model.description || this.get('description'),
-            positionK: model.positionK,
-            positionA: model.positionA
-        });
-
-        localStorage.setItem('PoiStorage', JSON.stringify(PoiStorage));
-    },
-
-    update: function(){
-        var PoiStorage = JSON.parse(localStorage.getItem('PoiStorage'));
-
-        for(var i=0; i<PoiStorage.length; i++){
-            if(PoiStorage[i].id == this.get('id')){
-                PoiStorage[i].title = this.get('title');
-                PoiStorage[i].description = this.get('description');
-                PoiStorage[i].positionK = this.get('positionK') || this.get('location').k;
-                PoiStorage[i].positionA = this.get('positionA') || this.get('location').A;
-            }
-        }
-
-        localStorage.setItem('PoiStorage', JSON.stringify(PoiStorage));
-    },
-
-    destroy: function(){
-        var PoiStorage = JSON.parse(localStorage.getItem('PoiStorage'));
-
-        for(var i=0; i<PoiStorage.length; i++){
-            if(PoiStorage[i].id == this.get('id')){
-                PoiStorage.splice(i, 1);
-            }
-        }
-        if(PoiStorage.length === 0){
-            localStorage.setItem('PoiStorageId', 0);
-        }
-        localStorage.setItem('PoiStorage', JSON.stringify(PoiStorage));
-        this.trigger('destroy');
-    }
-
+    saveModel: function (model) {model.save()}
 
 });
 
@@ -76,20 +19,16 @@ var poiMapView = Backbone.View.extend({
 
     initialize: function(){
         this.createMarker();
-        this.model.bind("change", this.updateMarker, this);
-        this.model.bind("destroy", this.destroyMarker, this);
+        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "destroy", this.destroyMarker, this);
     },
 
-    createMarker: function(model){
 
-
-//        этот self меня тоже не устраивает, но другого не придумал для google.maps.event
-//        $.proxy не помогло
-
+    createMarker: function () {
         var self = this;
 
         this.marker = new google.maps.Marker({
-            position: this.model.get('location'),
+            position: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
             map: map,
             draggable: true
         });
@@ -100,40 +39,22 @@ var poiMapView = Backbone.View.extend({
         });
 
         google.maps.event.addListener(this.marker, 'click', function() {
-            self.model.set({animation: true});
-            self.infoWindow.open(map, self.marker);
-        });
-        google.maps.event.addListener(self.infoWindow,'closeclick',function(){
-            self.model.set({animation: false});
+            self.infoWindow.open(map,self.marker);
         });
 
         google.maps.event.addListener(this.marker, 'dragend', function(event) {
             self.model.set({
-                location: event.latLng,
-                positionK: event.latLng.k,
-                positionA: event.latLng.A
+                positionLat: event.latLng.lat(),
+                positionLng: event.latLng.lng()
             });
         })
     },
 
-    updateMarker: function(model){
 
-        var positionK = this.model.get('positionK') || this.model.get('location').k;
-        var positionA = this.model.get('positionA') || this.model.get('location').A;
-        var latlng = new google.maps.LatLng(positionK, positionA);
-        this.marker.setPosition(latlng);
-
-        if(this.infoWindow) this.infoWindow.close();
-
-        this.infoWindow.content = this.template(model);
-
-        if(this.model.get('animation')){
-            this.marker.setAnimation(google.maps.Animation.BOUNCE);
-        } else {
-            this.marker.setAnimation(null);
-        }
-
+    render: function () {
+        this.infoWindow.setContent(this.template(this.model))
     },
+
 
     destroyMarker: function(){
         this.marker.setMap(null);
@@ -158,12 +79,12 @@ var poiListView = Backbone.View.extend({
 
     initialize: function(){
         this.create();
-        this.model.bind("change", this.render, this);
-        this.model.bind("destroy", this.destroyView, this);
+        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "destroy", this.destroyView, this);
     },
 
     destroy: function(){
-        if(confirm()){
+        if(confirm('Удалить точку?')){
             this.model.destroy();
         }
     },
@@ -212,8 +133,8 @@ var poiEditorView = Backbone.View.extend({
 //    },
 
     initialize: function(){
-        this.model.bind("change", this.render, this);
-        this.model.bind("destroy", this.closeEditor, this);
+        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "destroy", this.closeEditor, this);
     },
 
     domEvents: function(){
@@ -240,7 +161,7 @@ var poiEditorView = Backbone.View.extend({
     },
 
     saveModel: function(){
-        this.model.set({
+        this.model.save({
             title: this.$el.find('.edit__title').val(),
             description: this.$el.find('.edit__description').val()
         });
@@ -253,14 +174,27 @@ var poiEditorView = Backbone.View.extend({
 //коллекция Poi
 var poiAppCollection = Backbone.Collection.extend({
 
-    initialize: function(){
-        this.createMap();
-        this.fetchPois();
-        this.domEvents();
+    model: poiModel,
+    localStorage: new Backbone.LocalStorage("PoiEditor")
+
+});
+
+var App = new poiAppCollection;
+
+
+
+var mainView = Backbone.View.extend({
+    el: '.h-wrapper',
+
+    events:{
+        "click .b-toggle__editor": 'listenMapClick'
     },
 
-    domEvents: function(){
-        $('.b-toggle__editor').on('click', $.proxy(this.listenMapClick, this));
+    initialize: function () {
+        this.createMap();
+        this.listenTo(App, 'add', this.addOne);
+        App.fetch();
+        this.countId();
     },
 
     createMap: function(){
@@ -283,59 +217,34 @@ var poiAppCollection = Backbone.Collection.extend({
         google.maps.event.removeListener(this.listener);
     },
 
-
-//    загрузка Poi с хранилища
-    fetchPois: function(){
-        if(localStorage.getItem('PoiStorage')){
-            var PoiList = JSON.parse(localStorage.getItem('PoiStorage'));
-            for(var i=0; i<PoiList.length; i++){
-                var newModel = new poiModel({
-                    title: JSON.parse(localStorage.getItem('PoiStorage'))[i].title,
-                    description: JSON.parse(localStorage.getItem('PoiStorage'))[i].description,
-                    location: new google.maps.LatLng(JSON.parse(localStorage.getItem('PoiStorage'))[i].positionK, JSON.parse(localStorage.getItem('PoiStorage'))[i].positionA),
-                    id: JSON.parse(localStorage.getItem('PoiStorage'))[i].id
-                });
-
-                var PoiView = new poiMapView({model:newModel});
-                var PoiListView = new poiListView({model:newModel});
-                var PoiEditorView = new poiEditorView({model:newModel});
-                this.add(newModel);
-            }
+    countId: function () {
+        if(!App.length) {
+            this.counter = 0;
+        } else {
+            this.counter = _.max(App.pluck('id')) + 1 || 0;
         }
     },
 
-//    создание новой Poi
-    createNewModel: function(location){
-        var newModelId = 0;
-
-        if(JSON.parse(localStorage.getItem('PoiStorage'))) {
-            newModelId = +localStorage.getItem('PoiStorageId') + 1;
-            localStorage.setItem('PoiStorageId', newModelId);
-        }
-
-        var newModel = new poiModel({
-            id: newModelId,
-            location: new google.maps.LatLng(location.k, location.A),
-            title: 'New POI ' + newModelId,
-            positionK: location.k,
-            positionA: location.A,
-            animation: false
+    createNewModel: function (event) {
+        App.create({
+            positionLat: event.lat(),
+            positionLng: event.lng(),
+            title: 'New POI ' + this.counter,
+            id: this.counter
         });
+        this.counter++;
+    },
 
-        newModel.save({
-            id: newModelId,
-            title: 'New POI ' + newModelId,
-            positionK: location.k,
-            positionA: location.A
+    addOne: function (model) {
+        model.set({
+            edit : false,
+            animation : false
         });
-
-        var PoiView = new poiMapView({model:newModel});
-        var PoiListView = new poiListView({model:newModel});
-        var PoiEditorView = new poiEditorView({model:newModel});
-        this.add(newModel);
+        var PoiMapView = new poiMapView({model: model});
+        var PoiEditorView = new poiEditorView({model: model});
+        var PoiListView = new poiListView({model: model});
     }
-
-
 });
 
-var App = new poiAppCollection;
+
+var MainView = new mainView;
