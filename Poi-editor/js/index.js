@@ -75,7 +75,7 @@ var poiListView = Backbone.View.extend({
     },
 
     destroy: function(){
-        if(confirm('Удалить точку?')){
+        if(confirm('Удалить точку?')) {
             this.model.destroy();
         }
     },
@@ -87,7 +87,7 @@ var poiListView = Backbone.View.extend({
     render: function(){
         this.$el.html(this.template(this.model));
 
-        if(this.model.get('animation')){
+        if(this.model.get('animation')) {
             this.$el.addClass('animate');
         } else {
             this.$el.removeClass('animate');
@@ -122,7 +122,7 @@ var poiEditorView = Backbone.View.extend({
 
     render: function(){
         this.$el.remove();
-        if(this.model.get('edit')){
+        if(this.model.get('edit')) {
             $('.b-poi__list').append(this.$el.html(this.template(this.model)));
         }
         this.bindEvents();
@@ -159,7 +159,8 @@ var PoiAppCollection = new poiAppCollection;
 var mainView = Backbone.View.extend({
     el: '.h-wrapper',
     events:{
-        "click .b-toggle__editor": 'listenMapClick'
+        "click .js-toggle__editor": 'listenMapClick',
+        "click .js-poi__list__delete__all": 'deleteAllModels'
     },
 
     initialize: function () {
@@ -184,10 +185,12 @@ var mainView = Backbone.View.extend({
         }, this);
 
         this.listener = google.maps.event.addListener(map, 'click', mapClickListener);
+        map.set('draggableCursor', 'crosshair');
     },
 
     stopListenMapClick: function(){
         google.maps.event.removeListener(this.listener);
+        map.set('draggableCursor', null)
     },
 
     countId: function () {
@@ -217,6 +220,16 @@ var mainView = Backbone.View.extend({
         var PoiEditorView = new poiEditorView({model: model});
         var PoiListView = new poiListView({model: model});
         $('.b-poi__list').append(PoiListView.$el.html(PoiListView.template(model)));
+    },
+
+    deleteAllModels: function () {
+        if(!PoiAppCollection.length) {
+            alert("Нечего удалять")
+        } else if(confirm('Вы увернены, что хотите удалить все точки?')) {
+            while(model = PoiAppCollection.first()){
+                model.destroy();
+            }
+        }
     }
 });
 

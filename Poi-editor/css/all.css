@@ -81,12 +81,30 @@ form,fieldset{
 	width: 200px;
 	padding: 10px;
 }
-.b-toggle__editor{
+.b-poi__list__buttons{
     position: absolute;
-    left: 50%;
+    left: 0;
+    right: 0;
     top: 10px;
-    padding: 20px;
+    margin: auto;
+    padding: 0;
+    list-style-type: none;
+    width: 300px;
+}
+.b-poi__list__buttons__frame{
+    float: left;
+    width: 145px;
+    margin: 0 0 0 10px;
+}
+.b-poi__list__buttons__frame:first-child{
+    margin: 0;
+}
+.b-poi__list__button{
 	cursor: pointer;
+    width: 141px;
+    padding: 20px 0;
+    text-align: center;
+    display: block;
 }
 .b-edit__holder{
 	overflow: hidden;
