@@ -1,13 +1,10 @@
 //модель Poi
-
 var poiModel = Backbone.Model.extend({
-
     initialize: function(){
         this.listenTo(this, "change", this.saveModel);
     },
 
     saveModel: function (model) {model.save()}
-
 });
 
 
@@ -23,9 +20,7 @@ var poiMapView = Backbone.View.extend({
         this.listenTo(this.model, "destroy", this.destroyMarker, this);
     },
 
-
     createMarker: function () {
-
         this.marker = new google.maps.Marker({
             position: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
             map: map,
@@ -48,22 +43,16 @@ var poiMapView = Backbone.View.extend({
         });
 
         google.maps.event.addListener(this.marker, 'click', openInfoWondow);
-
         google.maps.event.addListener(this.marker, 'dragend', saveDragendMarker);
-
     },
-
 
     render: function () {
         this.infoWindow.setContent(this.template(this.model))
     },
 
-
     destroyMarker: function(){
         this.marker.setMap(null);
     }
-
-
 });
 
 
@@ -111,44 +100,32 @@ var poiListView = Backbone.View.extend({
             animation : true
         });
     }
-
-
 });
 
 
 
 //представление Poi в окне редактирования
 var poiEditorView = Backbone.View.extend({
-
     tagName: 'div',
     className: 'b-poi-editor',
     template: _.template($('#poi-editor__template').html()),
-
-//  почему не работает?
-//    events: {
-//        'click .b-saveEdit': 'saveModel',
-//        'click .b-closeEdit': 'closeEditor'
-//    },
 
     initialize: function(){
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "destroy", this.closeEditor, this);
     },
 
-    domEvents: function(){
+    bindEvents: function(){
         $('.b-saveEdit').on('click', $.proxy(this.saveModel, this));
         $('.b-closeEdit').on('click', $.proxy(this.closeEditor, this));
     },
 
     render: function(){
-
         this.$el.remove();
-
         if(this.model.get('edit')){
             $('.b-poi__list').append(this.$el.html(this.template(this.model)));
         }
-        this.domEvents();
-
+        this.bindEvents();
     },
 
     closeEditor: function(){
@@ -164,34 +141,31 @@ var poiEditorView = Backbone.View.extend({
             description: this.$el.find('.edit__description').val()
         });
     }
-
 });
 
 
 
 //коллекция Poi
 var poiAppCollection = Backbone.Collection.extend({
-
     model: poiModel,
     localStorage: new Backbone.LocalStorage("PoiEditor")
-
 });
 
-var App = new poiAppCollection;
+var PoiAppCollection = new poiAppCollection;
 
 
 
+//основная View
 var mainView = Backbone.View.extend({
     el: '.h-wrapper',
-
     events:{
         "click .b-toggle__editor": 'listenMapClick'
     },
 
     initialize: function () {
         this.createMap();
-        this.listenTo(App, 'add', this.addOne);
-        App.fetch();
+        this.listenTo(PoiAppCollection, 'add', this.addOne);
+        PoiAppCollection.fetch();
         this.countId();
     },
 
@@ -217,15 +191,15 @@ var mainView = Backbone.View.extend({
     },
 
     countId: function () {
-        if(!App.length) {
+        if(!PoiAppCollection.length) {
             this.counter = 0;
         } else {
-            this.counter = _.max(App.pluck('id')) + 1 || 0;
+            this.counter = _.max(PoiAppCollection.pluck('id')) + 1 || 0;
         }
     },
 
     createNewModel: function (event) {
-        App.create({
+        PoiAppCollection.create({
             positionLat: event.lat(),
             positionLng: event.lng(),
             title: 'New POI ' + this.counter,
