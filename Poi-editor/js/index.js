@@ -25,7 +25,6 @@ var poiMapView = Backbone.View.extend({
 
 
     createMarker: function () {
-        var self = this;
 
         this.marker = new google.maps.Marker({
             position: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
@@ -33,21 +32,25 @@ var poiMapView = Backbone.View.extend({
             draggable: true
         });
 
+        var openInfoWondow = $.proxy(function () {
+            this.infoWindow.open(map,this.marker);
+        }, this);
+
+        var saveDragendMarker = $.proxy(function (event) {
+            this.model.set({
+                positionLat: event.latLng.lat(),
+                positionLng: event.latLng.lng()
+            });
+        }, this);
 
         this.infoWindow = new google.maps.InfoWindow({
             content: this.template(this.model)
         });
 
-        google.maps.event.addListener(this.marker, 'click', function() {
-            self.infoWindow.open(map,self.marker);
-        });
+        google.maps.event.addListener(this.marker, 'click', openInfoWondow);
 
-        google.maps.event.addListener(this.marker, 'dragend', function(event) {
-            self.model.set({
-                positionLat: event.latLng.lat(),
-                positionLng: event.latLng.lng()
-            });
-        })
+        google.maps.event.addListener(this.marker, 'dragend', saveDragendMarker);
+
     },
 
 
@@ -78,7 +81,6 @@ var poiListView = Backbone.View.extend({
     },
 
     initialize: function(){
-        this.create();
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "destroy", this.destroyView, this);
     },
@@ -91,10 +93,6 @@ var poiListView = Backbone.View.extend({
 
     destroyView: function(){
         this.$el.remove();
-    },
-
-    create: function(){
-        $('.b-poi__list').append(this.$el.html(this.template(this.model)));
     },
 
     render: function(){
@@ -206,11 +204,12 @@ var mainView = Backbone.View.extend({
     },
 
     listenMapClick: function(){
-        var self = this;
-        this.listener = google.maps.event.addListener(map, 'click', function(event) {
-            self.createNewModel(event.latLng);
-            self.stopListenMapClick();
-        });
+        var mapClickListener = $.proxy(function (event) {
+            this.createNewModel(event.latLng);
+            this.stopListenMapClick();
+        }, this);
+
+        this.listener = google.maps.event.addListener(map, 'click', mapClickListener);
     },
 
     stopListenMapClick: function(){
@@ -243,6 +242,7 @@ var mainView = Backbone.View.extend({
         var PoiMapView = new poiMapView({model: model});
         var PoiEditorView = new poiEditorView({model: model});
         var PoiListView = new poiListView({model: model});
+        $('.b-poi__list').append(PoiListView.$el.html(PoiListView.template(model)));
     }
 });
 
