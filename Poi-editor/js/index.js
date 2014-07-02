@@ -160,6 +160,7 @@ var mainView = Backbone.View.extend({
     el: '.h-wrapper',
     events:{
         "click .js-toggle__editor": 'listenMapClick',
+        "click .js-random": 'createRandom',
         "click .js-poi__list__delete__all": 'deleteAllModels'
     },
 
@@ -222,7 +223,19 @@ var mainView = Backbone.View.extend({
         $('.b-poi__list').append(PoiListView.$el.html(PoiListView.template(model)));
     },
 
-    deleteAllModels: function () {
+    createRandom: function () {
+        for(var i=0; i<10; i++){
+            PoiAppCollection.create({
+                positionLat: (Math.random()-0.5)*180,
+                positionLng: (Math.random()-0.5)*360,
+                title: 'New POI ' + this.counter,
+                id: this.counter
+            });
+            this.counter++;
+        }
+    },
+
+deleteAllModels: function () {
         if(!PoiAppCollection.length) {
             alert("Нечего удалять")
         } else if(confirm('Вы увернены, что хотите удалить все точки?')) {
