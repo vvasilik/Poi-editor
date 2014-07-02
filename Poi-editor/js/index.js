@@ -224,7 +224,9 @@ var mainView = Backbone.View.extend({
     },
 
     createRandom: function () {
-        for(var i=0; i<10; i++){
+        var randomPoisNumber = prompt('Сколько точек добавить?', 10);
+        if(randomPoisNumber > 1000) randomPoisNumber = 1000;
+        for(var i=0; i<randomPoisNumber; i++){
             PoiAppCollection.create({
                 positionLat: (Math.random()-0.5)*180,
                 positionLng: (Math.random()-0.5)*360,
