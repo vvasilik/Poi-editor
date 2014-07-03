@@ -72,6 +72,16 @@ var poiListView = Backbone.View.extend({
     initialize: function(){
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "destroy", this.destroyView, this);
+        this.listenTo(this.model, "openEdit", this.startAnimation, this);
+        this.listenTo(this.model, "closeEdit", this.finishAnimation, this);
+    },
+
+    startAnimation: function () {
+        this.$el.addClass('animate')
+    },
+
+    finishAnimation: function () {
+        this.$el.removeClass('animate')
     },
 
     destroy: function(){
@@ -86,19 +96,10 @@ var poiListView = Backbone.View.extend({
 
     render: function(){
         this.$el.html(this.template(this.model));
-
-        if(this.model.get('animation')) {
-            this.$el.addClass('animate');
-        } else {
-            this.$el.removeClass('animate');
-        }
     },
 
     openEditor: function(){
-        this.model.set({
-            edit : true,
-            animation : true
-        });
+        this.model.trigger('openEdit')
     }
 });
 
@@ -111,7 +112,7 @@ var poiEditorView = Backbone.View.extend({
     template: _.template($('#poi-editor__template').html()),
 
     initialize: function(){
-        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "openEdit", this.render, this);
         this.listenTo(this.model, "destroy", this.closeEditor, this);
     },
 
@@ -122,17 +123,13 @@ var poiEditorView = Backbone.View.extend({
 
     render: function(){
         this.$el.remove();
-        if(this.model.get('edit')) {
-            $('.b-poi__list').append(this.$el.html(this.template(this.model)));
-        }
+        $('.b-poi__list').append(this.$el.html(this.template(this.model)));
         this.bindEvents();
     },
 
     closeEditor: function(){
-        this.model.set({
-            edit: false,
-            animation: false
-        });
+        this.model.trigger('closeEdit');
+        this.$el.remove();
     },
 
     saveModel: function(){
@@ -140,6 +137,7 @@ var poiEditorView = Backbone.View.extend({
             title: this.$el.find('.edit__title').val(),
             description: this.$el.find('.edit__description').val()
         });
+        this.closeEditor();
     }
 });
 
@@ -213,10 +211,6 @@ var mainView = Backbone.View.extend({
     },
 
     addOne: function (model) {
-        model.set({
-            edit : false,
-            animation : false
-        });
         var PoiMapView = new poiMapView({model: model});
         var PoiEditorView = new poiEditorView({model: model});
         var PoiListView = new poiListView({model: model});
