@@ -15,6 +15,9 @@
             <li class="b-poi__list__buttons__frame">
                 <button class="b-poi__list__button js-toggle__editor">Добавить точку</button>
             </li>
+            <li class="b-poi__list__buttons__frame _small__btn">
+                <button class="b-poi__list__button _small__btn js-cancel__add">Отменить</button>
+            </li>
             <li class="b-poi__list__buttons__frame">
                 <button class="b-poi__list__button js-random">Рандомные точки</button>
             </li>
@@ -22,14 +25,23 @@
                 <button class="b-poi__list__button js-poi__list__delete__all">Удалить все точки</button>
             </li>
         </ul>
+        <ul class="b-poi__images"></ul>
     </div>
 
 
+    <script type="text/template" id="poi-images__template">
+        <% if(this.model.get('imageSrc')) { %>
+            <img class="b-poi__image" width="100" height="100" src="<%=  this.model.get('imageSrc')%>" alt="Poi image"/>
+        <% } else { %>
+            <img class="b-poi__image" width="100" height="100" src="images/default.jpg" alt="Poi image"/>
+        <% } %>
+    </script>
 
     <script type="text/template" id="poi-map__template">
         <div class="b-map__info">
             <h2 class="b-map__info__title"><strong><%= this.model.get('title') %></strong></h2>
             <p><%= this.model.get('description') %></p>
+            <img class="b-poi__image" src="<%=  this.model.get('imageSrc')%>" alt="Poi image"/>
         </div>
     </script>
 
@@ -47,6 +59,10 @@
         <input class="edit__title" value="<%= this.model.get('title') %>" type="text"/>
         <h2>Описание</h2>
         <textarea class="edit__description" placeholder="Добавьте описание"><%= this.model.get('description') %></textarea>
+        <input id="input-file" type="file"/>
+        <% if(this.model.get('imageSrc')) { %>
+            <img class="b-poi__image" src="<%=  this.model.get('imageSrc')%>" alt="Poi image"/>
+        <% } %>
         <button class="b-saveEdit">Сохранить</button>
         <button class="b-closeEdit">Закрыть</button>
     </script>

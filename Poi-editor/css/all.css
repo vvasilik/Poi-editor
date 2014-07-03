@@ -38,7 +38,7 @@ form,fieldset{
     z-index: 9999;
     right: 10px;
     top: 0;
-	padding: 25px 0;
+	padding: 25px 0 106px;
 	box-sizing: border-box;
     height: 100%;
 	font:12px/15px Arial, Helvetica, sans-serif;
@@ -69,17 +69,25 @@ form,fieldset{
 }
 .b-poi-editor{
     position: absolute;
+    overflow: auto;
     z-index: 9999;
     right: 210px;
-    top: 0;
+    top: 25px;
+    bottom: 106px;
     width: 222px;
     padding: 30px;
     background-color: #fff;
     border: 1px solid #000;
 }
+.b-poi__image__row{
+    display: block;
+    width: 100%;
+}
 .b-map__info{
 	width: 200px;
-	padding: 10px;
+    padding: 0 0 10px;
+    position: relative;
+    left: 20px;
 }
 .b-poi__list__buttons{
     position: absolute;
@@ -89,19 +97,23 @@ form,fieldset{
     margin: auto;
     padding: 0;
     list-style-type: none;
-    width: 455px;
+    width: 421px;
 }
 .b-poi__list__buttons__frame{
     float: left;
-    width: 145px;
+    width: 112px;
     margin: 0 0 0 10px;
+}
+.b-poi__list__buttons__frame._small__btn{
+    width: 70px;
+    margin: 0 0 0 -5px;
 }
 .b-poi__list__buttons__frame:first-child{
     margin: 0;
 }
 .b-poi__list__button{
 	cursor: pointer;
-    width: 141px;
+    width: 100%;
     padding: 20px 0;
     text-align: center;
     display: block;
@@ -129,4 +141,39 @@ form,fieldset{
     padding: 0;
     width: 220px;
     height: 50px;
+}
+.b-poi__images{
+    position: absolute;
+    z-index: 10005;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    white-space: nowrap;
+}
+.b-poi__images__frame{
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    width: 100px;
+    height: 100px;
+    margin: 0 0 0 -3px;
+    border: 3px solid #ccc;
+}
+.b-poi__images__frame:first-child{ margin: 0;}
+.b-poi__images__frame:hover{
+    cursor: pointer;
+    z-index: 10006;
+    border-color: #777;
+}
+.b-poi__images__frame.animate{
+    border-color: #f00;
+    z-index: 10008;
+}
+.b-poi__image{
+    display: block;
+    width: 100%;
 }

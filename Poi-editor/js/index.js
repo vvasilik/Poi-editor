@@ -18,12 +18,15 @@ var poiMapView = Backbone.View.extend({
         this.createMarker();
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "destroy", this.destroyMarker, this);
+        this.listenTo(this.model, "openEdit", this.startAnimation, this);
+        this.listenTo(this.model, "closeEdit", this.finishAnimation, this);
     },
 
     createMarker: function () {
         this.marker = new google.maps.Marker({
             position: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
             map: map,
+            animation: google.maps.Animation.DROP,
             draggable: true
         });
 
@@ -44,6 +47,15 @@ var poiMapView = Backbone.View.extend({
 
         google.maps.event.addListener(this.marker, 'click', openInfoWondow);
         google.maps.event.addListener(this.marker, 'dragend', saveDragendMarker);
+    },
+
+    startAnimation: function () {
+        this.marker.setAnimation(google.maps.Animation.BOUNCE);
+        map.panTo(new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')));
+    },
+
+    finishAnimation: function () {
+        this.marker.setAnimation(null);
     },
 
     render: function () {
@@ -104,6 +116,53 @@ var poiListView = Backbone.View.extend({
 });
 
 
+//представление картинок Poi
+var poiImagesView = Backbone.View.extend({
+
+    tagName: 'li',
+    className: 'b-poi__images__frame',
+    template: _.template($('#poi-images__template').html()),
+
+    events:{
+        'click': 'setOpenEditActive',
+        'dblclick': 'destroy'
+    },
+
+    initialize: function(){
+        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "destroy", this.destroyView, this);
+        this.listenTo(this.model, "openEdit", this.startAnimation, this);
+        this.listenTo(this.model, "closeEdit", this.finishAnimation, this);
+    },
+
+    startAnimation: function () {
+        this.$el.addClass('animate')
+    },
+
+    finishAnimation: function () {
+        this.$el.removeClass('animate')
+    },
+
+    setOpenEditActive: function () {
+        this.model.trigger('openEdit')
+    },
+
+    destroyView: function(){
+        this.$el.remove();
+    },
+
+    render: function(){
+            this.$el.html(this.template(this.model));
+    },
+
+    destroy: function(){
+        if(confirm('Удалить точку?')) {
+            this.model.destroy();
+        }
+    }
+});
+
+
 
 //представление Poi в окне редактирования
 var poiEditorView = Backbone.View.extend({
@@ -114,16 +173,29 @@ var poiEditorView = Backbone.View.extend({
     initialize: function(){
         this.listenTo(this.model, "openEdit", this.render, this);
         this.listenTo(this.model, "destroy", this.closeEditor, this);
+        this.listenTo(this.model, "change", this.render, this);
     },
 
     bindEvents: function(){
         $('.b-saveEdit').on('click', $.proxy(this.saveModel, this));
         $('.b-closeEdit').on('click', $.proxy(this.closeEditor, this));
+        $('#input-file').on('change', $.proxy(this.addImage, this));
+    },
+
+    addImage: function () {
+        var self = this;
+        if (document.getElementById('input-file').files[0]) {
+            var reader = new FileReader();
+            reader.readAsDataURL(document.getElementById('input-file').files[0]);
+            reader.onload = function (e) {
+                self.model.set({ imageSrc: e.target.result });
+            };
+        }
     },
 
     render: function(){
         this.$el.remove();
-        $('.b-poi__list').append(this.$el.html(this.template(this.model)));
+        $('.b-poi__list__holder').append(this.$el.html(this.template(this.model)));
         this.bindEvents();
     },
 
@@ -158,6 +230,7 @@ var mainView = Backbone.View.extend({
     el: '.h-wrapper',
     events:{
         "click .js-toggle__editor": 'listenMapClick',
+        "click .js-cancel__add": 'stopListenMapClick',
         "click .js-random": 'createRandom',
         "click .js-poi__list__delete__all": 'deleteAllModels'
     },
@@ -214,7 +287,9 @@ var mainView = Backbone.View.extend({
         var PoiMapView = new poiMapView({model: model});
         var PoiEditorView = new poiEditorView({model: model});
         var PoiListView = new poiListView({model: model});
+        var PoiImagesView = new poiImagesView({model: model});
         $('.b-poi__list').append(PoiListView.$el.html(PoiListView.template(model)));
+        $('.b-poi__images').append(PoiImagesView.$el.html(PoiImagesView.template(model)));
     },
 
     createRandom: function () {
@@ -231,7 +306,7 @@ var mainView = Backbone.View.extend({
         }
     },
 
-deleteAllModels: function () {
+    deleteAllModels: function () {
         if(!PoiAppCollection.length) {
             alert("Нечего удалять")
         } else if(confirm('Вы увернены, что хотите удалить все точки?')) {
