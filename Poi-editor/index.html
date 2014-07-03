@@ -31,9 +31,9 @@
 
     <script type="text/template" id="poi-images__template">
         <% if(this.model.get('imageSrc')) { %>
-            <img class="b-poi__image" width="100" height="100" src="<%=  this.model.get('imageSrc')%>" alt="Poi image"/>
+            <img class="b-poi__image__row" height="100" src="<%=  this.model.get('imageSrc')%>" alt="Poi image"/>
         <% } else { %>
-            <img class="b-poi__image" width="100" height="100" src="images/default.jpg" alt="Poi image"/>
+            <img class="b-poi__image__row" height="100" src="images/default.jpg" alt="Poi image"/>
         <% } %>
     </script>
 

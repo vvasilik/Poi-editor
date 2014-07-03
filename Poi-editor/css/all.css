@@ -79,10 +79,6 @@ form,fieldset{
     background-color: #fff;
     border: 1px solid #000;
 }
-.b-poi__image__row{
-    display: block;
-    width: 100%;
-}
 .b-map__info{
 	width: 200px;
     padding: 0 0 10px;
@@ -156,6 +152,7 @@ form,fieldset{
 }
 .b-poi__images__frame{
     position: relative;
+    overflow: hidden;
     display: inline-block;
     vertical-align: top;
     width: 100px;
@@ -172,6 +169,11 @@ form,fieldset{
 .b-poi__images__frame.animate{
     border-color: #f00;
     z-index: 10008;
+}
+.b-poi__image__row{
+    display: block;
+    min-height: 100%;
+    min-width: 100%;
 }
 .b-poi__image{
     display: block;
