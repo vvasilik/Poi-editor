@@ -140,8 +140,8 @@ form,fieldset{
     position: absolute;
     z-index: 10005;
     left: 0;
-    right: 0;
     bottom: 0;
+    max-width: 100%;
     overflow: auto;
     margin: 0;
     padding: 0;
