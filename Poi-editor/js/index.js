@@ -20,6 +20,12 @@ var poiMapView = Backbone.View.extend({
         this.listenTo(this.model, "destroy", this.destroyMarker, this);
         this.listenTo(this.model, "openEdit", this.startAnimation, this);
         this.listenTo(this.model, "closeEdit", this.finishAnimation, this);
+        this.listenTo(this.model, "mouseover", this.mouseover, this);
+        this.listenTo(this.model, "mouseout", this.mouseout, this);
+    },
+
+    bindEvents: function () {
+        $('.b-poi__edit').on('click', $.proxy(this.editPoi, this))
     },
 
     createMarker: function () {
@@ -27,11 +33,13 @@ var poiMapView = Backbone.View.extend({
             position: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
             map: map,
             animation: google.maps.Animation.DROP,
+            icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
             draggable: true
         });
 
         var openInfoWondow = $.proxy(function () {
             this.infoWindow.open(map,this.marker);
+            this.bindEvents();
         }, this);
 
         var saveDragendMarker = $.proxy(function (event) {
@@ -41,12 +49,30 @@ var poiMapView = Backbone.View.extend({
             });
         }, this);
 
+        var closeEditPoi = $.proxy(function () {
+            this.model.trigger('closeEdit');
+        }, this);
+
         this.infoWindow = new google.maps.InfoWindow({
             content: this.template(this.model)
         });
 
         google.maps.event.addListener(this.marker, 'click', openInfoWondow);
         google.maps.event.addListener(this.marker, 'dragend', saveDragendMarker);
+        google.maps.event.addListener(this.infoWindow,'closeclick', closeEditPoi);
+    },
+
+    editPoi: function () {
+        this.model.trigger('openEdit');
+    },
+
+    mouseover: function () {
+        this.marker.set('icon', 'http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+        map.panTo(new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')));
+    },
+
+    mouseout: function () {
+        this.marker.set('icon', 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
     },
 
     startAnimation: function () {
@@ -125,7 +151,9 @@ var poiImagesView = Backbone.View.extend({
 
     events:{
         'click': 'setOpenEditActive',
-        'dblclick': 'destroy'
+        'dblclick': 'destroy',
+        'mouseenter': 'isHovered',
+        'mouseleave': 'isNoHovered'
     },
 
     initialize: function(){
@@ -133,6 +161,14 @@ var poiImagesView = Backbone.View.extend({
         this.listenTo(this.model, "destroy", this.destroyView, this);
         this.listenTo(this.model, "openEdit", this.startAnimation, this);
         this.listenTo(this.model, "closeEdit", this.finishAnimation, this);
+    },
+
+    isHovered: function () {
+        this.model.trigger('mouseover')
+    },
+
+    isNoHovered: function () {
+        this.model.trigger('mouseout')
     },
 
     startAnimation: function () {
@@ -172,13 +208,14 @@ var poiEditorView = Backbone.View.extend({
 
     initialize: function(){
         this.listenTo(this.model, "openEdit", this.render, this);
-        this.listenTo(this.model, "destroy", this.closeEditor, this);
+        this.listenTo(this.model, "closeEdit", this.closeEditor, this);
+        this.listenTo(this.model, "destroy", this.closeEditorWithModelEvent, this);
         this.listenTo(this.model, "change", this.render, this);
     },
 
     bindEvents: function(){
         $('.b-saveEdit').on('click', $.proxy(this.saveModel, this));
-        $('.b-closeEdit').on('click', $.proxy(this.closeEditor, this));
+        $('.b-closeEdit').on('click', $.proxy(this.closeEditorWithModelEvent, this));
         $('#input-file').on('change', $.proxy(this.addImage, this));
     },
 
@@ -199,8 +236,12 @@ var poiEditorView = Backbone.View.extend({
         this.bindEvents();
     },
 
-    closeEditor: function(){
+    closeEditorWithModelEvent: function(){
         this.model.trigger('closeEdit');
+        this.$el.remove();
+    },
+
+    closeEditor: function(){
         this.$el.remove();
     },
 
@@ -209,7 +250,7 @@ var poiEditorView = Backbone.View.extend({
             title: this.$el.find('.edit__title').val(),
             description: this.$el.find('.edit__description').val()
         });
-        this.closeEditor();
+        this.closeEditorWithModelEvent();
     }
 });
 
@@ -236,6 +277,7 @@ var mainView = Backbone.View.extend({
     },
 
     initialize: function () {
+        PoiAppCollection.markersList = [];
         this.createMap();
         this.listenTo(PoiAppCollection, 'add', this.addOne);
         PoiAppCollection.fetch();

@@ -73,7 +73,7 @@ form,fieldset{
     z-index: 9999;
     right: 210px;
     top: 25px;
-    bottom: 106px;
+    max-height: 200px;
     width: 222px;
     padding: 30px;
     background-color: #fff;
@@ -81,9 +81,7 @@ form,fieldset{
 }
 .b-map__info{
 	width: 200px;
-    padding: 0 0 10px;
-    position: relative;
-    left: 20px;
+    padding: 0 0 10px 15px;
 }
 .b-poi__list__buttons{
     position: absolute;
