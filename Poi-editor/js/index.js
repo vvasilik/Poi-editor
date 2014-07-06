@@ -332,6 +332,31 @@ var mainView = Backbone.View.extend({
         var PoiImagesView = new poiImagesView({model: model});
         $('.b-poi__list').append(PoiListView.$el.html(PoiListView.template(model)));
         $('.b-poi__images').append(PoiImagesView.$el.html(PoiImagesView.template(model)));
+
+
+        if(PoiAppCollection.markersList.length){
+            var rendererOptions = {
+                draggable: true
+            };
+            var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+            var directionsService = new google.maps.DirectionsService();
+
+            directionsDisplay.setMap(map);
+            directionsDisplay.setOptions( { suppressMarkers: true } );
+
+            var request = {
+                origin: PoiAppCollection.markersList[PoiAppCollection.markersList.length - 1],
+                destination: new google.maps.LatLng(model.get('positionLat'), model.get('positionLng')),
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            directionsService.route(request, function (response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsDisplay.setDirections(response);
+                }
+            });
+        }
+
+        PoiAppCollection.markersList.push(new google.maps.LatLng(model.get('positionLat'), model.get('positionLng')))
     },
 
     createRandom: function () {
@@ -356,6 +381,10 @@ var mainView = Backbone.View.extend({
                 model.destroy();
             }
         }
+    },
+
+    createRout: function () {
+
     }
 });
 
