@@ -104,6 +104,8 @@ var poiListView = Backbone.View.extend({
 
     events:{
         'click .b-edit': 'openEditor',
+        'mouseover': 'isHovered',
+        'mouseout': 'isNoHovered',
         'click .b-delete': 'destroy'
     },
 
@@ -120,6 +122,14 @@ var poiListView = Backbone.View.extend({
 
     finishAnimation: function () {
         this.$el.removeClass('animate')
+    },
+
+    isHovered: function () {
+        this.model.trigger('mouseover')
+    },
+
+    isNoHovered: function () {
+        this.model.trigger('mouseout')
     },
 
     destroy: function(){
