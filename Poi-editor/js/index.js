@@ -47,6 +47,7 @@ var poiMapView = Backbone.View.extend({
                 positionLat: event.latLng.lat(),
                 positionLng: event.latLng.lng()
             });
+            MainView.updateRoad();
         }, this);
 
         var closeEditPoi = $.proxy(function () {
@@ -344,29 +345,82 @@ var mainView = Backbone.View.extend({
         $('.b-poi__images').append(PoiImagesView.$el.html(PoiImagesView.template(model)));
 
 
+        if(!PoiAppCollection.rout){
+            PoiAppCollection.rout = {};
+        }
+        PoiAppCollection.rout[model.id] = {};
+
+
         if(PoiAppCollection.markersList.length){
-            var rendererOptions = {
+            PoiAppCollection.rout[model.id].rendererOptions = {
                 draggable: true
             };
-            var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
-            var directionsService = new google.maps.DirectionsService();
+            PoiAppCollection.rout[model.id].directionsDisplay = new google.maps.DirectionsRenderer(PoiAppCollection.rout[model.id].rendererOptions);
+            PoiAppCollection.rout[model.id].directionsService = new google.maps.DirectionsService();
 
-            directionsDisplay.setMap(map);
-            directionsDisplay.setOptions( { suppressMarkers: true } );
+            PoiAppCollection.rout[model.id].directionsDisplay.setMap(map);
+            PoiAppCollection.rout[model.id].directionsDisplay.setOptions( { suppressMarkers: true } );
 
-            var request = {
+            PoiAppCollection.rout[model.id].request = {
                 origin: PoiAppCollection.markersList[PoiAppCollection.markersList.length - 1],
                 destination: new google.maps.LatLng(model.get('positionLat'), model.get('positionLng')),
                 travelMode: google.maps.TravelMode.DRIVING
             };
-            directionsService.route(request, function (response, status) {
+            PoiAppCollection.rout[model.id].directionsService.route(PoiAppCollection.rout[model.id].request, function (response, status) {
                 if (status == google.maps.DirectionsStatus.OK) {
-                    directionsDisplay.setDirections(response);
+                    PoiAppCollection.rout[model.id].directionsDisplay.setDirections(response);
                 }
             });
         }
 
         PoiAppCollection.markersList.push(new google.maps.LatLng(model.get('positionLat'), model.get('positionLng')))
+    },
+
+    updateRoad: function () {
+        if(PoiAppCollection.length > 1){
+
+
+//            clear current rout
+            var waypts = [];
+
+            PoiAppCollection.markersList = [];
+            PoiAppCollection.each(function (model) {
+                PoiAppCollection.markersList.push(new google.maps.LatLng(model.get('positionLat'), model.get('positionLng')))
+            });
+
+            if(PoiAppCollection.rout.directionsDisplay) {
+                PoiAppCollection.rout.directionsDisplay.setMap(null);
+            }
+            PoiAppCollection.each(function(model) {
+                if(! $.isEmptyObject(PoiAppCollection.rout[model.id]) ) {
+                    waypts.push({location: new google.maps.LatLng(model.get('positionLat'), model.get('positionLng'))});
+                    PoiAppCollection.rout[model.id].directionsDisplay.setMap(null);
+                }
+            });
+
+
+//            create new rout
+            PoiAppCollection.rout.rendererOptions = {
+                draggable: true
+            };
+            PoiAppCollection.rout.directionsDisplay = new google.maps.DirectionsRenderer(PoiAppCollection.rout.rendererOptions);
+            PoiAppCollection.rout.directionsService = new google.maps.DirectionsService();
+
+            PoiAppCollection.rout.directionsDisplay.setMap(map);
+            PoiAppCollection.rout.directionsDisplay.setOptions({ suppressMarkers: true });
+
+            PoiAppCollection.rout.request = {
+                origin: PoiAppCollection.markersList[0],
+                destination: PoiAppCollection.markersList[PoiAppCollection.markersList.length - 1],
+                waypoints: waypts,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            PoiAppCollection.rout.directionsService.route(PoiAppCollection.rout.request, function (response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    PoiAppCollection.rout.directionsDisplay.setDirections(response);
+                }
+            });
+        }
     },
 
     createRandom: function () {
@@ -391,10 +445,6 @@ var mainView = Backbone.View.extend({
                 model.destroy();
             }
         }
-    },
-
-    createRout: function () {
-
     }
 });
 
