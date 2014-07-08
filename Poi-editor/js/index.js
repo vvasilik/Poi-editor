@@ -18,13 +18,13 @@ var poiMapView = Backbone.View.extend({
         this.createMarker();
         this.createRoute();
         this.listenTo(this.model, "change", this.render, this);
-        this.listenTo(this.model, "destroy", this.destroyMarker, this);
+        this.listenTo(this.model, "destroy", this.destroyView, this);
         this.listenTo(this.model, "openEdit", this.startAnimation, this);
         this.listenTo(this.model, "closeEdit", this.finishAnimation, this);
         this.listenTo(this.model, "mouseover", this.mouseover, this);
         this.listenTo(this.model, "mouseout", this.mouseout, this);
         this.listenTo(this.model, "updateRoute", this.updateRoute, this);
-        this.listenTo(this.model, "destroyRoute", this.updateRoute, this);
+        this.listenTo(this.model, "destroyRoute", this.destroyRoute, this);
     },
 
     bindEvents: function () {
@@ -106,10 +106,6 @@ var poiMapView = Backbone.View.extend({
         this.route.directionsDisplay.setMap(map);
     },
 
-    destroyRoute: function () {
-        this.route.directionsDisplay.setMap(nul);
-    },
-
     editPoi: function () {
         this.model.trigger('openEdit');
     },
@@ -136,8 +132,13 @@ var poiMapView = Backbone.View.extend({
         this.infoWindow.setContent(this.template(this.model));
     },
 
-    destroyMarker: function(){
+    destroyView: function(){
         this.marker.setMap(null);
+        this.route.directionsDisplay.setMap(null);
+    },
+
+    destroyRoute: function () {
+        this.route.directionsDisplay.setMap(null);
     }
 });
 
@@ -181,7 +182,7 @@ var poiListView = Backbone.View.extend({
     },
 
     destroy: function(){
-        if(confirm('Удалить точку?')) {
+        if (confirm('Удалить точку?')) {
             this.model.destroy();
         }
     },
@@ -250,7 +251,7 @@ var poiImagesView = Backbone.View.extend({
     },
 
     destroy: function(){
-        if(confirm('Удалить точку?')) {
+        if (confirm('Удалить точку?')) {
             this.model.destroy();
         }
     }
@@ -367,7 +368,7 @@ var mainView = Backbone.View.extend({
     },
 
     countId: function () {
-        if(!PoiAppCollection.length) {
+        if (!PoiAppCollection.length) {
             this.counter = 0;
         } else {
             this.counter = _.max(PoiAppCollection.pluck('id')) + 1 || 0;
@@ -389,9 +390,9 @@ var mainView = Backbone.View.extend({
         var nextModelPosition = [];
 
         //обновление предыдущего роута
-        if(model.number) {
+        if (model.number) {
             PoiAppCollection.each(function (item) {
-                if(item.number === model.number - 1){
+                if (item.number === model.number - 1){
                     item.trigger('updateRoute', [model.get('positionLat'), model.get('positionLng')])
                 }
             });
@@ -402,17 +403,45 @@ var mainView = Backbone.View.extend({
             modelsNumList.push(item.number);
         });
         PoiAppCollection.each(function (item) {
-            if(item.number === model.number + 1){
+            if (item.number === model.number + 1){
                 nextModelPosition = [item.get('positionLat'), item.get('positionLng')]
             }
         });
         PoiAppCollection.each(function (item) {
-            if(item.number === model.number){
+            if (item.number === model.number){
                 item.trigger('updateRoute', nextModelPosition)
             }
         });
     },
 
+    destroyRoute: function (model) {
+        var self = this;
+        var prevModelId = {};
+        if (model.number === PoiAppCollection.length) {
+            PoiAppCollection.each(function (item) {
+                if (item.number === model.number - 1) {
+                    prevModelId = item.id;
+                }
+            });
+            if (PoiAppCollection.length) {
+                PoiAppCollection.get(prevModelId).trigger('destroyRoute');
+            }
+        } else if (model.number === 0) {
+            PoiAppCollection.each(function (item) {
+                item.number = item.number - 1;
+            });
+        } else {
+            PoiAppCollection.each(function (item) {
+                if (item.number > model.number){
+                    item.number = item.number - 1;
+                } else if (item.number === model.number - 1) {
+                    prevModelId = item.id;
+                }
+            });
+            this.updateRoute(PoiAppCollection.get(prevModelId));
+        }
+        this.modelNum = this.modelNum - 1;
+    },
 
     addOne: function (model) {
         model.number = this.modelNum++
@@ -428,7 +457,7 @@ var mainView = Backbone.View.extend({
 
     createRandom: function () {
         var randomPoisNumber = prompt('Сколько точек добавить?', 10);
-        if(randomPoisNumber > 1000) randomPoisNumber = 1000;
+        if (randomPoisNumber > 1000) randomPoisNumber = 1000;
         for(var i=0; i<randomPoisNumber; i++){
             PoiAppCollection.create({
                 positionLat: (Math.random()-0.5)*180,
@@ -441,9 +470,9 @@ var mainView = Backbone.View.extend({
     },
 
     deleteAllModels: function () {
-        if(!PoiAppCollection.length) {
+        if (!PoiAppCollection.length) {
             alert("Нечего удалять")
-        } else if(confirm('Вы увернены, что хотите удалить все точки?')) {
+        } else if (confirm('Вы увернены, что хотите удалить все точки?')) {
             while(model = PoiAppCollection.first()){
                 model.destroy();
             }
