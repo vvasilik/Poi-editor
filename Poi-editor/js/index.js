@@ -16,12 +16,15 @@ var poiMapView = Backbone.View.extend({
 
     initialize: function(){
         this.createMarker();
+        this.createRoute();
         this.listenTo(this.model, "change", this.render, this);
         this.listenTo(this.model, "destroy", this.destroyMarker, this);
         this.listenTo(this.model, "openEdit", this.startAnimation, this);
         this.listenTo(this.model, "closeEdit", this.finishAnimation, this);
         this.listenTo(this.model, "mouseover", this.mouseover, this);
         this.listenTo(this.model, "mouseout", this.mouseout, this);
+        this.listenTo(this.model, "updateRoute", this.updateRoute, this);
+        this.listenTo(this.model, "destroyRoute", this.updateRoute, this);
     },
 
     bindEvents: function () {
@@ -47,7 +50,6 @@ var poiMapView = Backbone.View.extend({
                 positionLat: event.latLng.lat(),
                 positionLng: event.latLng.lng()
             });
-            MainView.updateRoad();
         }, this);
 
         var closeEditPoi = $.proxy(function () {
@@ -63,12 +65,57 @@ var poiMapView = Backbone.View.extend({
         google.maps.event.addListener(this.infoWindow,'closeclick', closeEditPoi);
     },
 
+    createRoute: function () {
+        this.route = {};
+        this.route.rendererOptions = {
+            draggable: true,
+            preserveViewport: true
+        };
+        this.route.directionsDisplay = new google.maps.DirectionsRenderer(this.route.rendererOptions);
+        this.route.directionsService = new google.maps.DirectionsService();
+
+        this.route.directionsDisplay.setOptions( { suppressMarkers: true } );
+
+        this.route.request = {
+            origin: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
+            destination: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        this.route.directionsService.route(this.route.request, $.proxy(function (response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                this.route.directionsDisplay.setDirections(response);
+            }
+        }, this));
+        this.route.directionsDisplay.setMap(map);
+    },
+
+    updateRoute: function (finalPosition) {
+        this.route.directionsDisplay.setMap(null);
+
+        this.route.request = {
+            origin: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
+            destination: new google.maps.LatLng(finalPosition[0], finalPosition[1]),
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        this.route.directionsService.route(this.route.request, $.proxy(function (response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                this.route.directionsDisplay.setDirections(response);
+            }
+        }, this));
+
+        this.route.directionsDisplay.setMap(map);
+    },
+
+    destroyRoute: function () {
+        this.route.directionsDisplay.setMap(nul);
+    },
+
     editPoi: function () {
         this.model.trigger('openEdit');
     },
 
     mouseover: function () {
-        this.marker.set('icon', 'http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+        this.marker.set('icon', 'http://maps.google.com/mapfiles/ms/icons/green-dot.png');
         map.panTo(new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')));
     },
 
@@ -86,7 +133,7 @@ var poiMapView = Backbone.View.extend({
     },
 
     render: function () {
-        this.infoWindow.setContent(this.template(this.model))
+        this.infoWindow.setContent(this.template(this.model));
     },
 
     destroyMarker: function(){
@@ -276,21 +323,22 @@ var poiAppCollection = Backbone.Collection.extend({
 var PoiAppCollection = new poiAppCollection;
 
 
-
 //основная View
 var mainView = Backbone.View.extend({
     el: '.h-wrapper',
     events:{
         "click .js-toggle__editor": 'listenMapClick',
-        "click .js-cancel__add": 'stopListenMapClick',
+        "click .js-cancel_this.modelNum_add": 'stopListenMapClick',
         "click .js-random": 'createRandom',
         "click .js-poi__list__delete__all": 'deleteAllModels'
     },
 
     initialize: function () {
-        PoiAppCollection.markersList = [];
+        this.modelNum = 0;
         this.createMap();
         this.listenTo(PoiAppCollection, 'add', this.addOne);
+        this.listenTo(PoiAppCollection, 'change', this.updateRoute);
+        this.listenTo(PoiAppCollection, 'destroy', this.destroyRoute);
         PoiAppCollection.fetch();
         this.countId();
     },
@@ -336,92 +384,47 @@ var mainView = Backbone.View.extend({
         this.counter++;
     },
 
+    updateRoute: function (model) {
+        var modelsNumList = [];
+        var nextModelPosition = [];
+
+        //обновление предыдущего роута
+        if(model.number) {
+            PoiAppCollection.each(function (item) {
+                if(item.number === model.number - 1){
+                    item.trigger('updateRoute', [model.get('positionLat'), model.get('positionLng')])
+                }
+            });
+        }
+
+        //обновление текущего роута
+        PoiAppCollection.each(function (item) {
+            modelsNumList.push(item.number);
+        });
+        PoiAppCollection.each(function (item) {
+            if(item.number === model.number + 1){
+                nextModelPosition = [item.get('positionLat'), item.get('positionLng')]
+            }
+        });
+        PoiAppCollection.each(function (item) {
+            if(item.number === model.number){
+                item.trigger('updateRoute', nextModelPosition)
+            }
+        });
+    },
+
+
     addOne: function (model) {
+        model.number = this.modelNum++
         var PoiMapView = new poiMapView({model: model});
         var PoiEditorView = new poiEditorView({model: model});
         var PoiListView = new poiListView({model: model});
         var PoiImagesView = new poiImagesView({model: model});
         $('.b-poi__list').append(PoiListView.$el.html(PoiListView.template(model)));
         $('.b-poi__images').append(PoiImagesView.$el.html(PoiImagesView.template(model)));
-
-
-        if(!PoiAppCollection.rout){
-            PoiAppCollection.rout = {};
-        }
-        PoiAppCollection.rout[model.id] = {};
-
-
-        if(PoiAppCollection.markersList.length){
-            PoiAppCollection.rout[model.id].rendererOptions = {
-                draggable: true
-            };
-            PoiAppCollection.rout[model.id].directionsDisplay = new google.maps.DirectionsRenderer(PoiAppCollection.rout[model.id].rendererOptions);
-            PoiAppCollection.rout[model.id].directionsService = new google.maps.DirectionsService();
-
-            PoiAppCollection.rout[model.id].directionsDisplay.setMap(map);
-            PoiAppCollection.rout[model.id].directionsDisplay.setOptions( { suppressMarkers: true } );
-
-            PoiAppCollection.rout[model.id].request = {
-                origin: PoiAppCollection.markersList[PoiAppCollection.markersList.length - 1],
-                destination: new google.maps.LatLng(model.get('positionLat'), model.get('positionLng')),
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-            PoiAppCollection.rout[model.id].directionsService.route(PoiAppCollection.rout[model.id].request, function (response, status) {
-                if (status == google.maps.DirectionsStatus.OK) {
-                    PoiAppCollection.rout[model.id].directionsDisplay.setDirections(response);
-                }
-            });
-        }
-
-        PoiAppCollection.markersList.push(new google.maps.LatLng(model.get('positionLat'), model.get('positionLng')))
+        this.updateRoute(model);
     },
 
-    updateRoad: function () {
-        if(PoiAppCollection.length > 1){
-
-
-//            clear current rout
-            var waypts = [];
-
-            PoiAppCollection.markersList = [];
-            PoiAppCollection.each(function (model) {
-                PoiAppCollection.markersList.push(new google.maps.LatLng(model.get('positionLat'), model.get('positionLng')))
-            });
-
-            if(PoiAppCollection.rout.directionsDisplay) {
-                PoiAppCollection.rout.directionsDisplay.setMap(null);
-            }
-            PoiAppCollection.each(function(model) {
-                if(! $.isEmptyObject(PoiAppCollection.rout[model.id]) ) {
-                    waypts.push({location: new google.maps.LatLng(model.get('positionLat'), model.get('positionLng'))});
-                    PoiAppCollection.rout[model.id].directionsDisplay.setMap(null);
-                }
-            });
-
-
-//            create new rout
-            PoiAppCollection.rout.rendererOptions = {
-                draggable: true
-            };
-            PoiAppCollection.rout.directionsDisplay = new google.maps.DirectionsRenderer(PoiAppCollection.rout.rendererOptions);
-            PoiAppCollection.rout.directionsService = new google.maps.DirectionsService();
-
-            PoiAppCollection.rout.directionsDisplay.setMap(map);
-            PoiAppCollection.rout.directionsDisplay.setOptions({ suppressMarkers: true });
-
-            PoiAppCollection.rout.request = {
-                origin: PoiAppCollection.markersList[0],
-                destination: PoiAppCollection.markersList[PoiAppCollection.markersList.length - 1],
-                waypoints: waypts,
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-            PoiAppCollection.rout.directionsService.route(PoiAppCollection.rout.request, function (response, status) {
-                if (status == google.maps.DirectionsStatus.OK) {
-                    PoiAppCollection.rout.directionsDisplay.setDirections(response);
-                }
-            });
-        }
-    },
 
     createRandom: function () {
         var randomPoisNumber = prompt('Сколько точек добавить?', 10);
