@@ -274,6 +274,7 @@ var poiEditorView = Backbone.View.extend({
 
     bindEvents: function(){
         $('.b-saveEdit').on('click', $.proxy(this.saveModel, this));
+        $('.b-deletePoi').on('click', $.proxy(this.destroy, this));
         $('.b-closeEdit').on('click', $.proxy(this.closeEditorWithModelEvent, this));
         $('#input-file').on('change', $.proxy(this.addImage, this));
     },
@@ -286,6 +287,12 @@ var poiEditorView = Backbone.View.extend({
             reader.onload = function (e) {
                 self.model.set({ imageSrc: e.target.result });
             };
+        }
+    },
+
+    destroy: function(){
+        if (confirm('Удалить точку?')) {
+            this.model.destroy();
         }
     },
 
