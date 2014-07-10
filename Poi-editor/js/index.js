@@ -388,7 +388,7 @@ var mainView = Backbone.View.extend({
     el: '.h-wrapper',
     events:{
         "click .js-toggle__editor": 'listenMapClick',
-        "click .js-cancel_this.modelNum_add": 'stopListenMapClick',
+        "click .js-cancel__add": 'stopListenMapClick',
         "click .js-random": 'createRandom',
         "click .js-poi__list__delete__all": 'deleteAllModels'
     },
