@@ -67,6 +67,7 @@ var poiMapView = Backbone.View.extend({
 
     createRoute: function () {
         this.route = {};
+        this.polyline = {};
         this.route.rendererOptions = {
             draggable: true,
             preserveViewport: true
@@ -76,34 +77,80 @@ var poiMapView = Backbone.View.extend({
 
         this.route.directionsDisplay.setOptions( { suppressMarkers: true } );
 
-        this.route.request = {
-            origin: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
-            destination: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
-            travelMode: google.maps.TravelMode.DRIVING
-        };
-        this.route.directionsService.route(this.route.request, $.proxy(function (response, status) {
-            if (status == google.maps.DirectionsStatus.OK) {
-                this.route.directionsDisplay.setDirections(response);
-            }
-        }, this));
-        this.route.directionsDisplay.setMap(map);
+        this.updateRoute(false)
+//////////////////
+//        this.route.request = {
+//            origin: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
+//            destination: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
+//            travelMode: google.maps.TravelMode.DRIVING
+//        };
+//        this.route.directionsService.route(this.route.request, $.proxy(function (response, status) {
+//            if (status == google.maps.DirectionsStatus.OK) {
+//                this.route.directionsDisplay.setDirections(response);
+//                this.route.directionsDisplay.setMap(map);
+//            } else if (status == google.maps.DirectionsStatus.ZERO_RESULTS){
+//                var flightPlanCoordinates = [
+//                    new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
+//                    new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng'))
+//                ];
+//                this.polyline = new google.maps.Polyline({
+//                    path: flightPlanCoordinates,
+//                    geodesic: true,
+//                    strokeColor: '#FF0000',
+//                    strokeOpacity: 1.0,
+//                    strokeWeight: 4
+//                });
+//
+//                this.polyline.setMap(map);
+//            }
+//        }, this));
     },
 
     updateRoute: function (finalPosition) {
-        this.route.directionsDisplay.setMap(null);
+
+        if (!finalPosition) {
+            finalPosition = [this.model.get('positionLat'), this.model.get('positionLng')]
+        } else {
+            this.route.directionsDisplay.setMap(null);
+            if (!$.isEmptyObject(this.polyline)) {
+                this.polyline.setMap(null);
+            }
+        }
 
         this.route.request = {
             origin: new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
             destination: new google.maps.LatLng(finalPosition[0], finalPosition[1]),
             travelMode: google.maps.TravelMode.DRIVING
         };
-        this.route.directionsService.route(this.route.request, $.proxy(function (response, status) {
-            if (status == google.maps.DirectionsStatus.OK) {
-                this.route.directionsDisplay.setDirections(response);
-            }
-        }, this));
 
-        this.route.directionsDisplay.setMap(map);
+
+        var routeSetMap = $.proxy(function () {
+            this.route.directionsService.route(this.route.request, $.proxy(function (response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    this.route.directionsDisplay.setDirections(response);
+                    this.route.directionsDisplay.setMap(map);
+                } else if (status == google.maps.DirectionsStatus.ZERO_RESULTS){
+                    var flightPlanCoordinates = [
+                        new google.maps.LatLng(this.model.get('positionLat'), this.model.get('positionLng')),
+                        new google.maps.LatLng(finalPosition[0], finalPosition[1])
+                    ];
+                    this.polyline = new google.maps.Polyline({
+                        path: flightPlanCoordinates,
+                        geodesic: true,
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 1.0,
+                        strokeWeight: 4
+                    });
+
+                    this.polyline.setMap(map);
+                } else if (status == 'OVER_QUERY_LIMIT') {
+                    _.delay(routeSetMap, 500)
+                }
+            }, this));
+        }, this)
+        var startQueryCicleToGoogle = _.once(routeSetMap);
+        startQueryCicleToGoogle()
+        console.log('qwe')
     },
 
     editPoi: function () {
@@ -134,10 +181,16 @@ var poiMapView = Backbone.View.extend({
 
     destroyView: function(){
         this.marker.setMap(null);
+        if (!$.isEmptyObject(this.polyline)) {
+            this.polyline.setMap(null);
+        }
         this.route.directionsDisplay.setMap(null);
     },
 
     destroyRoute: function () {
+        if (!$.isEmptyObject(this.polyline)) {
+            this.polyline.setMap(null);
+        }
         this.route.directionsDisplay.setMap(null);
     }
 });
