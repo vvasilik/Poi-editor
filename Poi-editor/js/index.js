@@ -150,7 +150,6 @@ var poiMapView = Backbone.View.extend({
         }, this)
         var startQueryCicleToGoogle = _.once(routeSetMap);
         startQueryCicleToGoogle()
-        console.log('qwe')
     },
 
     editPoi: function () {
@@ -322,7 +321,7 @@ var poiEditorView = Backbone.View.extend({
         this.listenTo(this.model, "openEdit", this.render, this);
         this.listenTo(this.model, "closeEdit", this.closeEditor, this);
         this.listenTo(this.model, "destroy", this.closeEditorWithModelEvent, this);
-        this.listenTo(this.model, "change", this.render, this);
+        this.listenTo(this.model, "change:imageSrc", this.render, this);
     },
 
     bindEvents: function(){
