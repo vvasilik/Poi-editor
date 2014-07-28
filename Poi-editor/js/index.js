@@ -363,7 +363,6 @@ var mainView = Backbone.View.extend({
     events:{
         "click .js-toggle__editor": 'listenMapClick',
         "click .js-cancel__add": 'stopListenMapClick',
-        "click .js-random": 'createRandom',
         "click .js-poi__list__delete__all": 'deleteAllModels'
     },
 
@@ -485,21 +484,6 @@ var mainView = Backbone.View.extend({
         $('.b-poi__list').append(PoiListView.$el.html(PoiListView.template(model)));
         $('.b-poi__images').append(PoiImagesView.$el.html(PoiImagesView.template(model)));
         this.updateRoute(model);
-    },
-
-
-    createRandom: function () {
-        var randomPoisNumber = prompt('Сколько точек добавить?', 10);
-        if (randomPoisNumber > 1000) randomPoisNumber = 1000;
-        for(var i=0; i<randomPoisNumber; i++){
-            PoiAppCollection.create({
-                positionLat: (Math.random()-0.5)*180,
-                positionLng: (Math.random()-0.5)*360,
-                title: 'New POI ' + this.counter,
-                id: this.counter
-            });
-            this.counter++;
-        }
     },
 
     deleteAllModels: function () {

@@ -91,15 +91,15 @@ form,fieldset{
     margin: auto;
     padding: 0;
     list-style-type: none;
-    width: 421px;
+    width: 460px;
 }
 .b-poi__list__buttons__frame{
     float: left;
-    width: 112px;
+    width: 150px;
     margin: 0 0 0 10px;
 }
 .b-poi__list__buttons__frame._small__btn{
-    width: 70px;
+    width: 80px;
     margin: 0 0 0 -5px;
 }
 .b-poi__list__buttons__frame:first-child{
