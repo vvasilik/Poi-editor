@@ -363,6 +363,8 @@ var mainView = Backbone.View.extend({
     events:{
         "click .js-toggle__editor": 'listenMapClick',
         "click .js-cancel__add": 'stopListenMapClick',
+        "click .js-poi__list__create__link": 'createLink',
+        "click .js-add__share": 'addShare',
         "click .js-poi__list__delete__all": 'deleteAllModels'
     },
 
@@ -397,6 +399,34 @@ var mainView = Backbone.View.extend({
     stopListenMapClick: function(){
         google.maps.event.removeListener(this.listener);
         map.set('draggableCursor', null)
+    },
+
+    createLink: function () {
+        var lockalStorageLink = {};
+        lockalStorageLink.Main = localStorage.getItem('PoiEditor');
+        for (var i=0; i<lockalStorageLink.Main.split(',').length; i++) {
+            lockalStorageLink[i] = localStorage.getItem('PoiEditor-' + i);
+        }
+        this.$el.find('.js-poi__list__share').text(JSON.stringify(lockalStorageLink));
+    },
+
+    addShare: function () {
+        var addedShare = prompt("Введите текст - текущие точки будут утеряны");
+        if (addedShare) {
+            try {
+                var lockalStorageLink = JSON.parse(addedShare);
+                localStorage.clear();
+                localStorage.setItem('PoiEditor', lockalStorageLink.Main);
+                for (var i = 0; i < lockalStorageLink.Main.split(',').length; i++) {
+                    localStorage.setItem('PoiEditor-' + i, lockalStorageLink[i]);
+                }
+                location.reload();
+            }
+            catch(e) {
+                alert('Ошибка! Проверьте правильность введенных данных')
+            }
+        }
+
     },
 
     countId: function () {
@@ -476,7 +506,7 @@ var mainView = Backbone.View.extend({
     },
 
     addOne: function (model) {
-        model.number = this.modelNum++
+        model.number = this.modelNum++;
         var PoiMapView = new poiMapView({model: model});
         var PoiEditorView = new poiEditorView({model: model});
         var PoiListView = new poiListView({model: model});
@@ -493,6 +523,7 @@ var mainView = Backbone.View.extend({
             while(model = PoiAppCollection.first()){
                 model.destroy();
             }
+            localStorage.clear();
         }
     }
 });
