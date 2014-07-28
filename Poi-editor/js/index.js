@@ -402,7 +402,7 @@ var mainView = Backbone.View.extend({
     },
 
     createLink: function () {
-        var createDataText = confirm("Фото не импортируются!");
+        var createDataText = confirm("Примечание: фото не импортируются!");
         if (createDataText) {
             var lockalStorageLink = {};
             lockalStorageLink.Main = localStorage.getItem('PoiEditor');
