@@ -402,12 +402,18 @@ var mainView = Backbone.View.extend({
     },
 
     createLink: function () {
-        var lockalStorageLink = {};
-        lockalStorageLink.Main = localStorage.getItem('PoiEditor');
-        for (var i=0; i<lockalStorageLink.Main.split(',').length; i++) {
-            lockalStorageLink[i] = localStorage.getItem('PoiEditor-' + i);
+        var createDataText = confirm("Фото не импортируются!");
+        if (createDataText) {
+            var lockalStorageLink = {};
+            lockalStorageLink.Main = localStorage.getItem('PoiEditor');
+            for (var i=0; i<lockalStorageLink.Main.split(',').length; i++) {
+                var poiObj = JSON.parse(localStorage.getItem('PoiEditor-' + i));
+                poiObj.imageSrc = '';
+                var poiJSON = JSON.stringify(poiObj);
+                lockalStorageLink[i] = poiJSON;
+            }
+            this.$el.find('.js-poi__list__share').text(JSON.stringify(lockalStorageLink));
         }
-        this.$el.find('.js-poi__list__share').text(JSON.stringify(lockalStorageLink));
     },
 
     addShare: function () {
@@ -523,8 +529,8 @@ var mainView = Backbone.View.extend({
             while(model = PoiAppCollection.first()){
                 model.destroy();
             }
-            localStorage.clear();
         }
+        localStorage.clear();
     }
 });
 
