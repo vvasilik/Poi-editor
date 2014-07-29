@@ -86,7 +86,7 @@ form,fieldset{
 .b-poi__list__buttons{
     position: absolute;
     left: 92px;
-    top: 23px;
+    top: 43px;
 	width: 248px;
     margin: auto;
     padding: 0;
@@ -96,10 +96,10 @@ form,fieldset{
 .b-poi__list__buttons__frame{
 	float: left;
 	position: relative;
-	overflow: hidden;
-    margin: 0 0 20px;
+    margin: 0 0 40px;
 }
 .b-poi__list__buttons-holder{
+	position: relative;
 	float: left;
 	width: 150px;
 }
@@ -109,6 +109,17 @@ form,fieldset{
 .b-poi__list__share__holder{
 	width: 100%;
 }
+.b-poi__list__info{
+	display: none;
+	position: absolute;
+	left: 0;
+	top: -28px;
+	padding: 5px;
+	border-radius: 5px;
+	background: #fff;
+}
+.b-poi__list__buttons-holder:hover .b-poi__list__info{ display: block;}
+.b-poi__list__share:hover + .b-poi__list__info{ display: block;}
 .b-poi__list__share{
 	display: block;
 	width: 100%;
