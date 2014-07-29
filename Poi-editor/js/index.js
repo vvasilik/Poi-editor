@@ -417,10 +417,10 @@ var mainView = Backbone.View.extend({
     },
 
     addShare: function () {
-        var addedShare = prompt("Введите текст - текущие точки будут утеряны!");
+        var addedShare = confirm("Текущие точки будут утеряны!");
         if (addedShare) {
             try {
-                var lockalStorageLink = JSON.parse(addedShare);
+                var lockalStorageLink = JSON.parse(this.$el.find('.js-poi__list__input-share').val());
                 localStorage.clear();
                 localStorage.setItem('PoiEditor', lockalStorageLink.Main);
                 var lockalStorageList = lockalStorageLink.Main.split(',');

@@ -100,14 +100,18 @@ form,fieldset{
 }
 .b-poi__list__buttons-holder{
 	position: relative;
+	z-index: 9;
 	float: left;
 	width: 150px;
 }
 .b-poi__list__buttons-holder._small__btn{
 	width: 88px;
 }
-.b-poi__list__share__holder{
-	width: 100%;
+.b-poi__list__share__holder {
+	position: relative;
+	z-index: 1;
+	float: left;
+	width: 150px;
 }
 .b-poi__list__info{
 	display: none;
@@ -119,7 +123,6 @@ form,fieldset{
 	background: #fff;
 }
 .b-poi__list__buttons-holder:hover .b-poi__list__info{ display: block;}
-.b-poi__list__share:hover + .b-poi__list__info{ display: block;}
 .b-poi__list__share{
 	display: block;
 	width: 100%;
@@ -132,8 +135,12 @@ form,fieldset{
 	background: #fff;
 	font-size: 12px;
 	line-height: 15px;
+	outline: none;
 }
+.b-poi__list__share._small__btn{ width: 88px;}
 .b-poi__list__button{
+	position: relative;
+	z-index: 9;
 	cursor: pointer;
     width: 100%;
 	margin: 0;
