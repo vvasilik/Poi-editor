@@ -406,25 +406,26 @@ var mainView = Backbone.View.extend({
         if (createDataText) {
             var lockalStorageLink = {};
             lockalStorageLink.Main = localStorage.getItem('PoiEditor');
-            for (var i=0; i<lockalStorageLink.Main.split(',').length; i++) {
-                var poiObj = JSON.parse(localStorage.getItem('PoiEditor-' + i));
+            var lockalStorageList = lockalStorageLink.Main.split(',');
+            for (var i = 0; i < lockalStorageList.length; i++) {
+                var poiObj = JSON.parse(localStorage.getItem('PoiEditor-' + lockalStorageList[i]));
                 poiObj.imageSrc = '';
-                var poiJSON = JSON.stringify(poiObj);
-                lockalStorageLink[i] = poiJSON;
+                lockalStorageLink[i] = JSON.stringify(poiObj);
             }
             this.$el.find('.js-poi__list__share').text(JSON.stringify(lockalStorageLink));
         }
     },
 
     addShare: function () {
-        var addedShare = prompt("Введите текст - текущие точки будут утеряны");
+        var addedShare = prompt("Введите текст - текущие точки будут утеряны!");
         if (addedShare) {
             try {
                 var lockalStorageLink = JSON.parse(addedShare);
                 localStorage.clear();
                 localStorage.setItem('PoiEditor', lockalStorageLink.Main);
-                for (var i = 0; i < lockalStorageLink.Main.split(',').length; i++) {
-                    localStorage.setItem('PoiEditor-' + i, lockalStorageLink[i]);
+                var lockalStorageList = lockalStorageLink.Main.split(',');
+                for (var i = 0; i < lockalStorageList.length; i++) {
+                    localStorage.setItem('PoiEditor-' + lockalStorageList[i], lockalStorageLink[i]);
                 }
                 location.reload();
             }
