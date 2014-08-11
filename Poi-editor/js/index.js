@@ -1,3 +1,28 @@
+var mainRouter = Backbone.Router.extend({
+
+    routes: {
+        '': 'gotoIndexPage',
+        'map': 'gotoMapPage'
+    },
+
+    gotoIndexPage: function () {
+        $('.js-wrapper').addClass('_index');
+        $('.js-to-map').fadeIn();
+    },
+
+    gotoMapPage: function () {
+        $('.js-wrapper').removeClass('_index');
+        $('.js-to-map').fadeOut();
+    }
+
+
+
+
+});
+var MainRouter = new mainRouter();
+Backbone.history.start();
+
+
 //модель Poi
 var poiModel = Backbone.Model.extend({
     initialize: function(){
@@ -359,7 +384,7 @@ var PoiAppCollection = new poiAppCollection;
 
 //основная View
 var mainView = Backbone.View.extend({
-    el: '.h-wrapper',
+    el: '.js-wrapper',
     events:{
         "click .js-toggle__editor": 'listenMapClick',
         "click .js-cancel__add": 'stopListenMapClick',

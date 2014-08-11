@@ -6,12 +6,18 @@
 	<link rel="stylesheet" type="text/css" href="css/all.css" />
 </head>
 <body>
-    <div id="wrapper" class="h-wrapper">
+    <div id="wrapper" class="h-wrapper js-wrapper">
         <div id="map" class="h-map"></div>
         <div class="b-poi__list__holder">
             <ul class="b-poi__list"></ul>
         </div>
         <ul class="b-poi__list__buttons">
+            <li class="b-poi__list__buttons__frame">
+                <div class="b-poi__list__buttons-holder _small__btn">
+                    <a href="#" class="b-poi__list__button js-home">Домой</a>
+                    <span class="b-poi__list__info">Вернуться на стартовую страницу</span>
+                </div>
+            </li>
             <li class="b-poi__list__buttons__frame">
                 <div class="b-poi__list__buttons-holder">
                     <button class="b-poi__list__button js-toggle__editor">Добавить точку</button>
@@ -40,12 +46,19 @@
             </li>
             <li class="b-poi__list__buttons__frame">
                 <div class="b-poi__list__buttons-holder">
-                    <button class="b-poi__list__button js-poi__list__delete__all">Удалить все точки</button>
+                    <button class="b-poi__list__button rotating js-poi__list__delete__all">Удалить все точки</button>
                     <span class="b-poi__list__info">Удаление всех точек из базы(Внимание! Точки удаляются безвозвратно)</span>
                 </div>
             </li>
         </ul>
         <ul class="b-poi__images"></ul>
+        <div class="b-index__top">
+
+        </div>
+        <div class="b-index__bottom">
+
+        </div>
+        <a href="#map" class="b-to-map js-to-map">Начать</a>
     </div>
 
 
@@ -62,16 +75,20 @@
             <h2 class="b-map__info__title"><strong><%= this.model.get('title') %></strong></h2>
             <p><%= this.model.get('description') %></p>
             <img class="b-poi__image" src="<%=  this.model.get('imageSrc')%>" alt="Poi image"/>
-            <button class="b-poi__edit">Редактировать</button>
+            <button class="b-poi-editor__template__btn b-poi__edit">Редактировать</button>
         </div>
     </script>
 
     <script type="text/template" id="poi-list__template">
         <h2 class="b-poi__title"><%= this.model.get('title') %></h2>
-        <div class="b-edit__holder">
-            <span class="b-edit">редактировать</span>
-            <span class="b-delete">удалить</span>
-        </div>
+        <ul class="b-edit__holder">
+            <li class="b-edit__holder__frame">
+                <span class="b-edit__holder__btn b-edit">редактировать</span>
+            </li>
+            <li class="b-edit__holder__frame">
+                <span class="b-edit__holder__btn b-delete">удалить</span>
+            </li>
+        </ul>
     </script>
 
 
@@ -84,9 +101,17 @@
         <% if(this.model.get('imageSrc')) { %>
             <img class="b-poi__image" src="<%=  this.model.get('imageSrc')%>" alt="Poi image"/>
         <% } %>
-        <button class="b-saveEdit">Сохранить</button>
-        <button class="b-closeEdit">Закрыть</button>
-        <button class="b-deletePoi">Удалить</button>
+        <ul class="b-poi-editor__template__btns">
+            <li class="b-poi-editor__template__btns__frame">
+                <button class="b-poi-editor__template__btn b-saveEdit">Сохранить</button>
+            </li>
+            <li class="b-poi-editor__template__btns__frame">
+                <button class="b-poi-editor__template__btn b-closeEdit">Закрыть</button>
+            </li>
+            <li class="b-poi-editor__template__btns__frame">
+                <button class="b-poi-editor__template__btn b-deletePoi">Удалить</button>
+            </li>
+        </ul>
     </script>
 
 

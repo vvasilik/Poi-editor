@@ -33,6 +33,7 @@ form,fieldset{
 .h-map{
 	height: 100%;
 }
+.h-wrapper{ position: relative;}
 .b-poi__list__holder{
     position: absolute;
     z-index: 9999;
@@ -53,7 +54,6 @@ form,fieldset{
     background-color: #fff;
 }
 .b-poi__list__frame{
-    padding: 5px 10px;
     border: 1px solid #000;
 }
 .b-poi__list__frame.animate{
@@ -62,6 +62,7 @@ form,fieldset{
 }
 .b-poi__title{
     margin: 0;
+	padding: 5px 10px 0;
 	font:12px/15px Arial, Helvetica, sans-serif;
 }
 .b-map__info__title{
@@ -73,8 +74,8 @@ form,fieldset{
     z-index: 9999;
     right: 210px;
     top: 25px;
-    max-height: 200px;
-    width: 222px;
+    height: 230px;
+    width: 235px;
     padding: 30px;
     background-color: #fff;
     border: 1px solid #000;
@@ -87,28 +88,35 @@ form,fieldset{
     position: absolute;
     left: 92px;
     top: 43px;
-	width: 248px;
+	width: 258px;
     margin: auto;
     padding: 0;
     list-style-type: none;
 	white-space: nowrap;
 }
 .b-poi__list__buttons__frame{
-	float: left;
 	position: relative;
     margin: 0 0 40px;
+}
+.b-poi__list__buttons__frame:after{
+	content: '';
+	display: block;
+	clear: both;
 }
 .b-poi__list__buttons-holder{
 	position: relative;
 	z-index: 9;
 	float: left;
 	width: 150px;
+	margin: 0 10px 0 0;
 }
 .b-poi__list__buttons-holder._small__btn{
 	width: 88px;
+	margin: 0;
 }
 .b-poi__list__share__holder {
 	position: relative;
+	top: -5px;
 	z-index: 1;
 	float: left;
 	width: 150px;
@@ -147,23 +155,48 @@ form,fieldset{
     padding: 20px 0;
     text-align: center;
     display: block;
+	color: #fff;
+	background-color: #428bca;
+	border: 1px solid #357ebd;
+	border-radius: 6px;
+}
+.b-poi__list__button:hover{
+	cursor: pointer;
+	background-color: #3276b1;
+	border-color: #285e8e;
+	text-decoration: none;
 }
 .b-edit__holder{
 	overflow: hidden;
+	width: 100%;
     text-align: right;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	display: table;
 }
+.b-edit__holder__frame{
+	display: table-cell;
+	width: 50%;
+}
+.b-edit__holder__btn{
+	display: block;
+	text-align: center;
+	padding: 3px 0;
+	color: #fff;
+}
+.b-edit__holder__btn.b-edit{ background: #5bc0de;}
+.b-edit__holder__btn.b-delete{ background: #d9534f;}
+.b-edit__holder__btn.b-edit:hover{ background: #39b3d7;}
+.b-edit__holder__btn.b-delete:hover{ background: #d2322d;}
 .b-edit{
-	float: left;
     font-size: 10px;
     line-height: 12px;
-    color: #aaa;
     cursor: pointer;
 }
 .b-delete{
-	float: right;
 	font-size: 10px;
 	line-height: 12px;
-	color: #aaa;
 	cursor: pointer;
 }
 .edit__description{
@@ -184,6 +217,35 @@ form,fieldset{
     list-style-type: none;
     white-space: nowrap;
 }
+.b-poi-editor__template__btns{
+	display: table;
+	width: 100%;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.b-poi-editor__template__btns__frame{
+	display: table-cell;
+	padding: 0 0 0 2px;
+}
+.b-poi-editor__template__btns__frame:first-child{
+	padding: 0;
+}
+.b-poi-editor__template__btn{
+	display: block;
+	width: 100%;
+	cursor: pointer;
+	margin: 0;
+	padding: 5px 0;
+	color: #fff;
+	background-color: #5bc0de;
+	border: 1px solid #46b8da;
+	border-radius: 6px;
+}
+.b-poi-editor__template__btn:hover{
+	background-color: #39b3d7;
+	border-color: #269abc;
+}
 .b-poi__images__frame{
     position: relative;
     overflow: hidden;
@@ -192,13 +254,13 @@ form,fieldset{
     width: 100px;
     height: 100px;
     margin: 0 0 0 -3px;
-    border: 3px solid #ccc;
+    border: 3px solid #46b8da;
 }
 .b-poi__images__frame:first-child{ margin: 0;}
 .b-poi__images__frame:hover{
     cursor: pointer;
     z-index: 10006;
-    border-color: #777;
+    border-color: #357ebd;
 }
 .b-poi__images__frame.animate{
     border-color: #f00;
@@ -212,4 +274,58 @@ form,fieldset{
 .b-poi__image{
     display: block;
     width: 100%;
+	margin: 0 0 10px;
 }
+
+
+
+.b-to-map{
+	display: none;
+	position: fixed;
+	z-index: 99999;
+	left: 50%;
+	top: 50%;
+	width: 200px;
+	margin: -45px 0 0 -100px;
+	padding: 30px 0;
+	border-radius: 6px;
+	font-size: 25px;
+	line-height: 30px;
+	text-align: center;
+	color: #fff;
+	background-color: #5cb85c;
+	border: 1px solid #4cae4c;
+}
+.b-to-map:hover{
+	text-decoration: none;
+	background-color: #47a447;
+	border-color: #398439;
+}
+.b-index__top{
+	position: fixed;
+	z-index: 99999;
+	left: 0;
+	top: -50%;
+	right: 0;
+	height: 50%;
+	background: #101010;
+	-webkit-transition: all 1s;
+	-moz-transition: all 1s;
+	-o-transition: all 1s;
+	transition: all 1s;
+}
+.b-index__bottom{
+	position: fixed;
+	z-index: 99999;
+	left: 0;
+	bottom: -50%;
+	right: 0;
+	height: 50%;
+	background: #101010;
+	-webkit-transition: all 1s;
+	-moz-transition: all 1s;
+	-o-transition: all 1s;
+	transition: all 1s;
+}
+.h-wrapper._index .b-index__top{ top: 0;}
+.h-wrapper._index .b-index__bottom{ bottom: 0;}
