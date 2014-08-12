@@ -1,3 +1,4 @@
+//роутер
 var mainRouter = Backbone.Router.extend({
 
     routes: {
@@ -7,18 +8,19 @@ var mainRouter = Backbone.Router.extend({
 
     gotoIndexPage: function () {
         $('.js-wrapper').addClass('_index');
-        $('.js-to-map').fadeIn();
+        $('.js-index__nav').fadeIn();
     },
 
     gotoMapPage: function () {
         $('.js-wrapper').removeClass('_index');
-        $('.js-to-map').fadeOut();
+        $('.js-index__nav').fadeOut();
     }
 
 
 
 
 });
+
 var MainRouter = new mainRouter();
 Backbone.history.start();
 
@@ -146,9 +148,9 @@ var poiMapView = Backbone.View.extend({
                     _.delay(routeSetMap, 500)
                 }
             }, this));
-        }, this)
+        }, this);
         var startQueryCicleToGoogle = _.once(routeSetMap);
-        startQueryCicleToGoogle()
+        startQueryCicleToGoogle();
     },
 
     editPoi: function () {

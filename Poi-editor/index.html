@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<title>Poi Editor</title>
 	<link rel="stylesheet" type="text/css" href="css/all.css" />
+	<link rel="stylesheet" type="text/css" href="css/introjs.css" />
 </head>
 <body>
     <div id="wrapper" class="h-wrapper js-wrapper">
@@ -13,30 +14,34 @@
         </div>
         <ul class="b-poi__list__buttons">
             <li class="b-poi__list__buttons__frame">
-                <div class="b-poi__list__buttons-holder _small__btn">
-                    <a href="#" class="b-poi__list__button js-home">Домой</a>
+                <div class="b-poi__list__buttons-holder">
+                    <a href="#" class="b-poi__list__button js-home" data-step="1" data-intro="Тут вы можете вернуться на стартовую страницу" data-position='right'>Домой</a>
                     <span class="b-poi__list__info">Вернуться на стартовую страницу</span>
+                </div>
+                <div class="b-poi__list__buttons-holder _small__btn">
+                    <span class="b-poi__list__button js-home" data-step="2" data-intro="Посмотреть этот же курс обучения" data-position='right' onclick="javascript:introJs().start();">Подсказки</span>
+                    <span class="b-poi__list__info">Посмотреть инструкцию сайта</span>
                 </div>
             </li>
             <li class="b-poi__list__buttons__frame">
                 <div class="b-poi__list__buttons-holder">
-                    <button class="b-poi__list__button js-toggle__editor">Добавить точку</button>
+                    <button class="b-poi__list__button js-toggle__editor" data-step="3" data-intro="А здесь - добавить новую точку" data-position='right'>Добавить точку</button>
                     <span class="b-poi__list__info">Добавление точки кликом по карте</span>
                 </div>
                 <div class="b-poi__list__buttons-holder _small__btn">
-                    <button class="b-poi__list__button js-cancel__add">Отменить</button>
+                    <button class="b-poi__list__button js-cancel__add" data-step="4" data-intro="А если передумали - отменить добавление" data-position='right'>Отменить</button>
                     <span class="b-poi__list__info">Отменить добавление точки кликом по карте</span>
                 </div>
             </li>
             <li class="b-poi__list__buttons__frame">
-                <div class="b-poi__list__buttons-holder">
+                <div class="b-poi__list__buttons-holder" data-step="5" data-intro="Поделитесь с друзьями своим путешествием - для этого необходимо нажать на 'Скопировать базу' и переслать вашему другу весь текст из поля ниже" data-position='right'>
                     <button class="b-poi__list__button js-poi__list__create__link">Скопировать базу</button>
                     <span class="b-poi__list__info">Копировать маршрут путешествия(без фото)</span>
                     <div class="b-poi__list__share__holder">
                         <textarea class="b-poi__list__share js-poi__list__share"></textarea>
                     </div>
                 </div>
-                <div class="b-poi__list__buttons-holder _small__btn">
+                <div class="b-poi__list__buttons-holder _small__btn" data-step="6" data-intro="Для просмотра/редактирования копии путешествия вашего друга - вставьте в поле, присланный им текст, и нажмите кнопку 'Вставить'" data-position='right'>
                     <button class="b-poi__list__button _small__btn js-add__share">Вставить</button>
                     <span class="b-poi__list__info">Вставить маршрут путешествия</span>
                     <div class="b-poi__list__share__holder">
@@ -46,7 +51,7 @@
             </li>
             <li class="b-poi__list__buttons__frame">
                 <div class="b-poi__list__buttons-holder">
-                    <button class="b-poi__list__button rotating js-poi__list__delete__all">Удалить все точки</button>
+                    <button class="b-poi__list__button rotating js-poi__list__delete__all" data-step="7" data-intro="Ну а если созданный маршрут вам больше не нужен - так будет быстрее всего от него избавиться <br />;-)" data-position='right'>Удалить все точки</button>
                     <span class="b-poi__list__info">Удаление всех точек из базы(Внимание! Точки удаляются безвозвратно)</span>
                 </div>
             </li>
@@ -58,7 +63,14 @@
         <div class="b-index__bottom">
 
         </div>
-        <a href="#map" class="b-to-map js-to-map">Начать</a>
+        <ul class="b-index__nav js-index__nav">
+            <li class="b-index__nav__frame">
+                <a href="#map" class="b-to-map js-to-map">Начать</a>
+            </li>
+            <li class="b-index__nav__frame">
+                <a href="#map" class="b-to-map js-to-map js-to-map__help" onclick="javascript:introJs().start();">Подсказки</a>
+            </li>
+        </ul>
     </div>
 
 
@@ -125,5 +137,6 @@
 <script type="text/javascript" src="js/backbone.js"></script>
 <script type="text/javascript" src="js/backbone.localStorage-min.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
+<script type="text/javascript" src="js/intro.js"></script>
 </body>
 </html>
