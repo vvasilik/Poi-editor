@@ -235,9 +235,19 @@ var poiListView = Backbone.View.extend({
     },
 
     destroy: function(){
-        if (confirm('Удалить точку?')) {
+        swal({
+            title: "Вы увернены,",
+            text: "что хотите удалить точку?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#DD6B55',
+            confirmButtonText: 'Да, удалить!',
+            closeOnConfirm: false
+        },
+        $.proxy(function(){
             this.model.destroy();
-        }
+            swal("Точка удалена!", "Можно продолжить редактирование", "success");
+        }, this));
     },
 
     destroyView: function(){
@@ -304,9 +314,19 @@ var poiImagesView = Backbone.View.extend({
     },
 
     destroy: function(){
-        if (confirm('Удалить точку?')) {
+        swal({
+            title: "Вы увернены,",
+            text: "что хотите удалить точку?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#DD6B55',
+            confirmButtonText: 'Да, удалить!',
+            closeOnConfirm: false
+        },
+        $.proxy(function(){
             this.model.destroy();
-        }
+            swal("Точка удалена!", "Можно продолжить редактирование", "success");
+        }, this));
     }
 });
 
@@ -344,9 +364,19 @@ var poiEditorView = Backbone.View.extend({
     },
 
     destroy: function(){
-        if (confirm('Удалить точку?')) {
+        swal({
+            title: "Вы увернены,",
+            text: "что хотите удалить точку?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#DD6B55',
+            confirmButtonText: 'Да, удалить!',
+            closeOnConfirm: false
+        },
+        $.proxy(function(){
             this.model.destroy();
-        }
+            swal("Точка удалена!", "Можно продолжить редактирование", "success");
+        }, this));
     },
 
     render: function(){
@@ -429,23 +459,44 @@ var mainView = Backbone.View.extend({
     },
 
     createLink: function () {
-        var createDataText = confirm("Примечание: фото не импортируются!");
-        if (createDataText) {
-            var lockalStorageLink = {};
-            lockalStorageLink.Main = localStorage.getItem('PoiEditor');
-            var lockalStorageList = lockalStorageLink.Main.split(',');
-            for (var i = 0; i < lockalStorageList.length; i++) {
-                var poiObj = JSON.parse(localStorage.getItem('PoiEditor-' + lockalStorageList[i]));
-                poiObj.imageSrc = '';
-                lockalStorageLink[i] = JSON.stringify(poiObj);
-            }
-            this.$el.find('.js-poi__list__share').text(JSON.stringify(lockalStorageLink));
+        if (!PoiAppCollection.length) {
+            swal("Ошибка", "Ваша база пуста!", "error");
+        } else {
+            swal({
+                title: "Примечание:",
+                text: "Фото не импортируются!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#DD6B55',
+                confirmButtonText: 'Да, скопировать базу!',
+                closeOnConfirm: false
+            },
+            $.proxy(function () {
+                var lockalStorageLink = {};
+                lockalStorageLink.Main = localStorage.getItem('PoiEditor');
+                var lockalStorageList = lockalStorageLink.Main.split(',');
+                for (var i = 0; i < lockalStorageList.length; i++) {
+                    var poiObj = JSON.parse(localStorage.getItem('PoiEditor-' + lockalStorageList[i]));
+                    poiObj.imageSrc = '';
+                    lockalStorageLink[i] = JSON.stringify(poiObj);
+                }
+                this.$el.find('.js-poi__list__share').text(JSON.stringify(lockalStorageLink));
+                swal("База скопирована!", "Можно поделиться с другом!", "success");
+            }, this));
         }
     },
 
     addShare: function () {
-        var addedShare = confirm("Текущие точки будут утеряны!");
-        if (addedShare) {
+        swal({
+            title: "Вы уверены?",
+            text: "Текущие точки будут утеряны!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#DD6B55',
+            confirmButtonText: 'Да, загрузить базу!',
+            closeOnConfirm: false
+        },
+        $.proxy(function(){
             try {
                 var lockalStorageLink = JSON.parse(this.$el.find('.js-poi__list__input-share').val());
                 localStorage.clear();
@@ -457,10 +508,9 @@ var mainView = Backbone.View.extend({
                 location.reload();
             }
             catch(e) {
-                alert('Ошибка! Проверьте правильность введенных данных')
+                swal("Ошибка!", "Проверьте правильность введенных данных", "error");
             }
-        }
-
+        }, this));
     },
 
     countId: function () {
@@ -552,11 +602,23 @@ var mainView = Backbone.View.extend({
 
     deleteAllModels: function () {
         if (!PoiAppCollection.length) {
-            alert("Нечего удалять")
-        } else if (confirm('Вы увернены, что хотите удалить все точки?')) {
-            while(model = PoiAppCollection.first()){
-                model.destroy();
-            }
+            swal("Нечего удалять", "У вас отсутствуют точки на карте!", "error");
+        } else {
+            swal({
+                title: "Вы увернены,",
+                text: "что хотите удалить все точки?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#DD6B55',
+                confirmButtonText: 'Да, удалить все!',
+                closeOnConfirm: false
+            },
+            $.proxy(function(){
+                while(model = PoiAppCollection.first()){
+                    model.destroy();
+                }
+                swal("База очищена!", "Можно строить новый маршрут", "success");
+            }, this));
         }
         localStorage.clear();
     }
