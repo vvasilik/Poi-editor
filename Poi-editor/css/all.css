@@ -82,7 +82,7 @@ form,fieldset{
 }
 .b-map__info{
 	width: 200px;
-    padding: 0 0 10px 15px;
+    padding: 10px;
 }
 .b-poi__list__buttons{
     position: absolute;
