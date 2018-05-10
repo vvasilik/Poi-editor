@@ -319,7 +319,6 @@ form,fieldset{
 	right: 0;
 	height: 50%;
 	background: #101010;
-	-webkit-transition: all 1s;
 	transition: all 1s;
 }
 .b-index__bottom{
@@ -330,7 +329,6 @@ form,fieldset{
 	right: 0;
 	height: 50%;
 	background: #101010;
-	-webkit-transition: all 1s;
 	transition: all 1s;
 }
 .h-wrapper._index .b-index__top{ top: 0;}
@@ -340,23 +338,17 @@ form,fieldset{
   z-index: 999999;
   background-color: #000;
   opacity: 0;
-  background: -webkit-gradient(radial,center center,0px,center center,100%,color-stop(0%,rgba(0,0,0,0.4)),color-stop(100%,rgba(0,0,0,0.9)));
-  background: -webkit-radial-gradient(center,ellipse cover,rgba(0,0,0,0.4) 0,rgba(0,0,0,0.9) 100%);
-  background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0.4) 0, rgba(0,0,0,0.9) 100%);
   background: radial-gradient(center,ellipse cover,rgba(0,0,0,0.4) 0,rgba(0,0,0,0.9) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#66000000',endColorstr='#e6000000',GradientType=1);
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
   filter: alpha(opacity=50);
-  -webkit-transition: all 0.3s ease-out;
-          transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
 }
 
 .introjs-fixParent {
   z-index: auto !important;
   opacity: 1.0 !important;
-  -webkit-transform: none !important;
-      -ms-transform: none !important;
-          transform: none !important;
+  transform: none !important;
 }
 
 .introjs-showElement,
@@ -380,8 +372,7 @@ tr.introjs-showElement > th {
   border: 1px solid rgba(0,0,0,.5);
   border-radius: 4px;
   box-shadow: 0 2px 15px rgba(0,0,0,.4);
-  -webkit-transition: all 0.3s ease-out;
-          transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
 }
 
 .introjs-helperNumberLayer {
@@ -396,9 +387,7 @@ tr.introjs-showElement > th {
   color: white;
   text-align: center;
   text-shadow: 1px 1px 1px rgba(0,0,0,.3);
-  background: #ff3019; /* Old browsers */
-  background: -webkit-linear-gradient(top, #ff3019 0%, #cf0404 100%); /* Chrome10+,Safari5.1+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ff3019), color-stop(100%, #cf0404)); /* Chrome,Safari4+ */ /* FF3.6+ */ /* IE10+ */ /* Opera 11.10+ */
+  background: #ff3019; /* Old browsers */ /* Chrome10+,Safari5.1+ */ /* Chrome,Safari4+ */ /* FF3.6+ */ /* IE10+ */ /* Opera 11.10+ */
   background:         linear-gradient(to bottom, #ff3019 0%, #cf0404 100%);  /* W3C */
   width: 20px;
   height:20px;
@@ -471,8 +460,7 @@ tr.introjs-showElement > th {
   max-width: 300px;
   border-radius: 3px;
   box-shadow: 0 1px 10px rgba(0,0,0,.4);
-  -webkit-transition: opacity 0.1s ease-out;
-          transition: opacity 0.1s ease-out;
+  transition: opacity 0.1s ease-out;
 }
 
 .introjs-tooltipbuttons {
@@ -498,8 +486,6 @@ tr.introjs-showElement > th {
   cursor: pointer;
   outline: none;
   background-color: #ececec;
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f4f4f4), to(#ececec));
-  background-image: -webkit-linear-gradient(#f4f4f4, #ececec);
   background-image: linear-gradient(#f4f4f4, #ececec);
   -webkit-background-clip: padding;
   -moz-background-clip: padding;
@@ -520,8 +506,6 @@ tr.introjs-showElement > th {
 
 .introjs-button:focus,
 .introjs-button:active {
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ececec), to(#f4f4f4));
-  background-image: -webkit-linear-gradient(#ececec, #f4f4f4);
   background-image: linear-gradient(#ececec, #f4f4f4);
 }
 
@@ -691,13 +675,9 @@ tr.introjs-showElement > th {
         top: 37px;
         border-radius: 2px; }
         .sweet-alert .icon.error .line.left {
-          -webkit-transform: rotate(45deg);
-          -ms-transform: rotate(45deg);
           transform: rotate(45deg);
           left: 17px; }
         .sweet-alert .icon.error .line.right {
-          -webkit-transform: rotate(-45deg);
-          -ms-transform: rotate(-45deg);
           transform: rotate(-45deg);
           right: 16px; }
     .sweet-alert .icon.warning {
@@ -750,28 +730,18 @@ tr.introjs-showElement > th {
         width: 60px;
         height: 120px;
         background: white;
-        -webkit-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
         transform: rotate(45deg); }
       .sweet-alert .icon.success::before {
         border-radius: 120px 0 0 120px;
         top: -7px;
         left: -33px;
-        -webkit-transform: rotate(-45deg);
-        -ms-transform: rotate(-45deg);
         transform: rotate(-45deg);
-        -webkit-transform-origin: 60px 60px;
-        -ms-transform-origin: 60px 60px;
         transform-origin: 60px 60px; }
       .sweet-alert .icon.success::after {
         border-radius: 0 120px 120px 0;
         top: -11px;
         left: 30px;
-        -webkit-transform: rotate(-45deg);
-        -ms-transform: rotate(-45deg);
         transform: rotate(-45deg);
-        -webkit-transform-origin: 0px 60px;
-        -ms-transform-origin: 0px 60px;
         transform-origin: 0px 60px; }
       .sweet-alert .icon.success .placeholder {
         width: 80px;
@@ -791,8 +761,6 @@ tr.introjs-showElement > th {
         left: 28px;
         top: 8px;
         z-index: 1;
-        -webkit-transform: rotate(-45deg);
-        -ms-transform: rotate(-45deg);
         transform: rotate(-45deg); }
       .sweet-alert .icon.success .line {
         height: 5px;
@@ -805,15 +773,11 @@ tr.introjs-showElement > th {
           width: 25px;
           left: 14px;
           top: 46px;
-          -webkit-transform: rotate(45deg);
-          -ms-transform: rotate(45deg);
           transform: rotate(45deg); }
         .sweet-alert .icon.success .line.long {
           width: 47px;
           right: 8px;
           top: 38px;
-          -webkit-transform: rotate(-45deg);
-          -ms-transform: rotate(-45deg);
           transform: rotate(-45deg); }
     .sweet-alert .icon.custom {
       background-size: contain;
@@ -825,20 +789,6 @@ tr.introjs-showElement > th {
 /*
  * Animations
  */
-@-webkit-keyframes showSweetAlert {
-  0% {
-    transform: scale(0.7);
-    -webkit-transform: scale(0.7); }
-  45% {
-    transform: scale(1.05);
-    -webkit-transform: scale(1.05); }
-  80% {
-    -webkit-transform: scale(0.95);
-    transform: scale(0.95);
-    -webkit-tranform: scale(0.95); }
-  100% {
-    transform: scale(1);
-    -webkit-transform: scale(1); } }
 @keyframes showSweetAlert {
   0% {
     transform: scale(0.7);
@@ -847,19 +797,11 @@ tr.introjs-showElement > th {
     transform: scale(1.05);
     -webkit-transform: scale(1.05); }
   80% {
-    -webkit-transform: scale(0.95);
     transform: scale(0.95);
     -webkit-tranform: scale(0.95); }
   100% {
     transform: scale(1);
     -webkit-transform: scale(1); } }
-@-webkit-keyframes hideSweetAlert {
-  0% {
-    transform: scale(1);
-    -webkit-transform: scale(1); }
-  100% {
-    transform: scale(0.5);
-    -webkit-transform: scale(0.5); } }
 @keyframes hideSweetAlert {
   0% {
     transform: scale(1);
@@ -868,34 +810,10 @@ tr.introjs-showElement > th {
     transform: scale(0.5);
     -webkit-transform: scale(0.5); } }
 .showSweetAlert {
-  -webkit-animation: showSweetAlert 0.3s;
   animation: showSweetAlert 0.3s; }
 
 .hideSweetAlert {
-  -webkit-animation: hideSweetAlert 0.2s;
   animation: hideSweetAlert 0.2s; }
-
-@-webkit-keyframes animateSuccessTip {
-  0% {
-    width: 0;
-    left: 1px;
-    top: 19px; }
-  54% {
-    width: 0;
-    left: 1px;
-    top: 19px; }
-  70% {
-    width: 50px;
-    left: -8px;
-    top: 37px; }
-  84% {
-    width: 17px;
-    left: 21px;
-    top: 48px; }
-  100% {
-    width: 25px;
-    left: 14px;
-    top: 45px; } }
 @keyframes animateSuccessTip {
   0% {
     width: 0;
@@ -917,23 +835,6 @@ tr.introjs-showElement > th {
     width: 25px;
     left: 14px;
     top: 45px; } }
-@-webkit-keyframes animateSuccessLong {
-  0% {
-    width: 0;
-    right: 46px;
-    top: 54px; }
-  65% {
-    width: 0;
-    right: 46px;
-    top: 54px; }
-  84% {
-    width: 55px;
-    right: 0px;
-    top: 35px; }
-  100% {
-    width: 47px;
-    right: 8px;
-    top: 38px; } }
 @keyframes animateSuccessLong {
   0% {
     width: 0;
@@ -951,19 +852,6 @@ tr.introjs-showElement > th {
     width: 47px;
     right: 8px;
     top: 38px; } }
-@-webkit-keyframes rotatePlaceholder {
-  0% {
-    transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg); }
-  5% {
-    transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg); }
-  12% {
-    transform: rotate(-405deg);
-    -webkit-transform: rotate(-405deg); }
-  100% {
-    transform: rotate(-405deg);
-    -webkit-transform: rotate(-405deg); } }
 @keyframes rotatePlaceholder {
   0% {
     transform: rotate(-45deg);
@@ -978,26 +866,13 @@ tr.introjs-showElement > th {
     transform: rotate(-405deg);
     -webkit-transform: rotate(-405deg); } }
 .animateSuccessTip {
-  -webkit-animation: animateSuccessTip 0.75s;
   animation: animateSuccessTip 0.75s; }
 
 .animateSuccessLong {
-  -webkit-animation: animateSuccessLong 0.75s;
   animation: animateSuccessLong 0.75s; }
 
 .icon.success.animate::after {
-  -webkit-animation: rotatePlaceholder 4.25s ease-in;
   animation: rotatePlaceholder 4.25s ease-in; }
-
-@-webkit-keyframes animateErrorIcon {
-  0% {
-    transform: rotateX(100deg);
-    -webkit-transform: rotateX(100deg);
-    opacity: 0; }
-  100% {
-    transform: rotateX(0deg);
-    -webkit-transform: rotateX(0deg);
-    opacity: 1; } }
 @keyframes animateErrorIcon {
   0% {
     transform: rotateX(100deg);
@@ -1008,29 +883,7 @@ tr.introjs-showElement > th {
     -webkit-transform: rotateX(0deg);
     opacity: 1; } }
 .animateErrorIcon {
-  -webkit-animation: animateErrorIcon 0.5s;
   animation: animateErrorIcon 0.5s; }
-
-@-webkit-keyframes animateXMark {
-  0% {
-    transform: scale(0.4);
-    -webkit-transform: scale(0.4);
-    margin-top: 26px;
-    opacity: 0; }
-  50% {
-    transform: scale(0.4);
-    -webkit-transform: scale(0.4);
-    margin-top: 26px;
-    opacity: 0; }
-  80% {
-    transform: scale(1.15);
-    -webkit-transform: scale(1.15);
-    margin-top: -6px; }
-  100% {
-    transform: scale(1);
-    -webkit-transform: scale(1);
-    margin-top: 0;
-    opacity: 1; } }
 @keyframes animateXMark {
   0% {
     transform: scale(0.4);
@@ -1052,7 +905,6 @@ tr.introjs-showElement > th {
     margin-top: 0;
     opacity: 1; } }
 .animateXMark {
-  -webkit-animation: animateXMark 0.5s;
   animation: animateXMark 0.5s; }
 
 /*@include keyframes(simpleRotate) {
@@ -1062,30 +914,17 @@ tr.introjs-showElement > th {
 .simpleRotate {
 	@include animation('simpleRotate 0.75s');
 }*/
-@-webkit-keyframes pulseWarning {
-  0% {
-    border-color: #F8D486; }
-  100% {
-    border-color: #F8BB86; } }
 @keyframes pulseWarning {
   0% {
     border-color: #F8D486; }
   100% {
     border-color: #F8BB86; } }
 .pulseWarning {
-  -webkit-animation: pulseWarning 0.75s infinite alternate;
   animation: pulseWarning 0.75s infinite alternate; }
-
-@-webkit-keyframes pulseWarningIns {
-  0% {
-    background-color: #F8D486; }
-  100% {
-    background-color: #F8BB86; } }
 @keyframes pulseWarningIns {
   0% {
     background-color: #F8D486; }
   100% {
     background-color: #F8BB86; } }
 .pulseWarningIns {
-  -webkit-animation: pulseWarningIns 0.75s infinite alternate;
   animation: pulseWarningIns 0.75s infinite alternate; }

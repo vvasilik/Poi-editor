@@ -236,17 +236,17 @@ var PoiListView = Backbone.View.extend({
 
     destroy: function(){
         swal({
-            title: "Вы увернены,",
-            text: "что хотите удалить точку?",
+            title: "Are you sure,",
+            text: "that you want to delete this highlight?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: '#DD6B55',
-            confirmButtonText: 'Да, удалить!',
+            confirmButtonText: 'Yes, delete!',
             closeOnConfirm: false
         },
         $.proxy(function(){
             this.model.destroy();
-            swal("Точка удалена!", "Можно продолжить редактирование", "success");
+            swal("Highlight was deleted!", "You can continue redacting", "success");
         }, this));
     },
 
@@ -315,17 +315,17 @@ var PoiImagesView = Backbone.View.extend({
 
     destroy: function(){
         swal({
-            title: "Вы увернены,",
-            text: "что хотите удалить точку?",
+            title: "Are you sure,",
+            text: "that you want to delete this highlight?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: '#DD6B55',
-            confirmButtonText: 'Да, удалить!',
+            confirmButtonText: 'Yes, delete!',
             closeOnConfirm: false
         },
         $.proxy(function(){
             this.model.destroy();
-            swal("Точка удалена!", "Можно продолжить редактирование", "success");
+            swal("Highlight was deleted!", "You can continue redacting", "success");
         }, this));
     }
 });
@@ -365,17 +365,17 @@ var PoiEditorView = Backbone.View.extend({
 
     destroy: function(){
         swal({
-            title: "Вы увернены,",
-            text: "что хотите удалить точку?",
+            title: "Are you sure,",
+            text: "that you want to delete this highlight?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: '#DD6B55',
-            confirmButtonText: 'Да, удалить!',
+            confirmButtonText: 'Yes, delete!',
             closeOnConfirm: false
         },
         $.proxy(function(){
             this.model.destroy();
-            swal("Точка удалена!", "Можно продолжить редактирование", "success");
+            swal("Highlight was deleted!", "You can continue redacting", "success");
         }, this));
     },
 
@@ -460,15 +460,15 @@ var MainView = Backbone.View.extend({
 
     createLink: function () {
         if (!PoiAppCollection.length) {
-            swal("Ошибка", "Ваша база пуста!", "error");
+            swal("Error", "Your base is empty!", "error");
         } else {
             swal({
-                title: "Примечание:",
-                text: "Фото не импортируются!",
+                title: "Warning:",
+                text: "Photos can't be copied!",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: '#DD6B55',
-                confirmButtonText: 'Да, скопировать базу!',
+                confirmButtonText: 'Yes, copy the base!',
                 closeOnConfirm: false
             },
             $.proxy(function () {
@@ -481,19 +481,19 @@ var MainView = Backbone.View.extend({
                     lockalStorageLink[i] = JSON.stringify(poiObj);
                 }
                 this.$el.find('.js-poi__list__share').text(JSON.stringify(lockalStorageLink));
-                swal("База скопирована!", "Можно поделиться с другом!", "success");
+                swal("Base is ready to copy!", "You can share by it now!", "success");
             }, this));
         }
     },
 
     addShare: function () {
         swal({
-            title: "Вы уверены?",
-            text: "Текущие точки будут утеряны!",
+            title: "Are you sure",
+            text: "You will lost your current route!",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: '#DD6B55',
-            confirmButtonText: 'Да, загрузить базу!',
+            confirmButtonText: 'Yes, upload the base!',
             closeOnConfirm: false
         },
         $.proxy(function(){
@@ -508,7 +508,7 @@ var MainView = Backbone.View.extend({
                 location.reload();
             }
             catch(e) {
-                swal("Ошибка!", "Проверьте правильность введенных данных", "error");
+                swal("Error!", "Please check your input data", "error");
             }
         }, this));
     },
@@ -602,22 +602,22 @@ var MainView = Backbone.View.extend({
 
     deleteAllModels: function () {
         if (!PoiAppCollection.length) {
-            swal("Нечего удалять", "У вас отсутствуют точки на карте!", "error");
+            swal("Nothing to delete", "You have no any highlights!", "error");
         } else {
             swal({
-                title: "Вы увернены,",
-                text: "что хотите удалить все точки?",
+                title: "Are you sure,",
+                text: "that you want to delete all highlights?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: '#DD6B55',
-                confirmButtonText: 'Да, удалить все!',
+                confirmButtonText: 'Yes, delete all!',
                 closeOnConfirm: false
             },
             $.proxy(function(){
                 while(model = PoiAppCollection.first()){
                     model.destroy();
                 }
-                swal("База очищена!", "Можно строить новый маршрут", "success");
+                swal("Base is empty!", "You can create a new route", "success");
             }, this));
         }
         localStorage.clear();
