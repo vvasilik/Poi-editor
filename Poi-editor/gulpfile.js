@@ -20,7 +20,3 @@ gulp.task('js', function () {
 });
 
 gulp.task('default', ['css', 'js']);
-
-gulp.task('watch', function () {
-  gulp.watch('**/*.*', ['default'])
-});

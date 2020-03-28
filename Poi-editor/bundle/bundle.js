@@ -15,10 +15,6 @@ var MainRouter = Backbone.Router.extend({
         $('.js-wrapper').removeClass('_index');
         $('.js-index__nav').fadeOut();
     }
-
-
-
-
 });
 
 var mainRouter = new MainRouter();
