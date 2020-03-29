@@ -1,4 +1,4 @@
-//роутер
+//router
 var MainRouter = Backbone.Router.extend({
 
     routes: {
@@ -20,8 +20,7 @@ var MainRouter = Backbone.Router.extend({
 var mainRouter = new MainRouter();
 Backbone.history.start();
 
-
-//модель Poi
+//model Poi
 var PoiModel = Backbone.Model.extend({
     initialize: function(){
         this.listenTo(this, "change", this.saveModel);
@@ -32,7 +31,7 @@ var PoiModel = Backbone.Model.extend({
 
 
 
-//представление Poi на карте
+//Poi on map
 var PoiMapView = Backbone.View.extend({
     el: '.h-map',
     template: _.template($('#poi-map__template').html()),
@@ -193,7 +192,7 @@ var PoiMapView = Backbone.View.extend({
 
 
 
-//представление Poi в списке
+//Poi in list
 var PoiListView = Backbone.View.extend({
 
     tagName: 'li',
@@ -260,7 +259,7 @@ var PoiListView = Backbone.View.extend({
 });
 
 
-//представление картинок Poi
+//Poi image
 var PoiImagesView = Backbone.View.extend({
 
     tagName: 'li',
@@ -328,7 +327,7 @@ var PoiImagesView = Backbone.View.extend({
 
 
 
-//представление Poi в окне редактирования
+//Poi edit
 var PoiEditorView = Backbone.View.extend({
     tagName: 'div',
     className: 'b-poi-editor',
@@ -401,7 +400,7 @@ var PoiEditorView = Backbone.View.extend({
 
 
 
-//коллекция Poi
+//Poi collection
 var poiAppCollection = Backbone.Collection.extend({
     model: PoiModel,
     localStorage: new Backbone.LocalStorage("PoiEditor")
@@ -410,7 +409,7 @@ var poiAppCollection = Backbone.Collection.extend({
 var PoiAppCollection = new poiAppCollection;
 
 
-//основная View
+//main View
 var MainView = Backbone.View.extend({
     el: '.js-wrapper',
     events:{
@@ -531,7 +530,6 @@ var MainView = Backbone.View.extend({
         var modelsNumList = [];
         var nextModelPosition = [];
 
-        //обновление предыдущего роута
         if (model.number) {
             PoiAppCollection.each(function (item) {
                 if (item.number === model.number - 1){
@@ -540,7 +538,6 @@ var MainView = Backbone.View.extend({
             });
         }
 
-        //обновление текущего роута
         PoiAppCollection.each(function (item) {
             modelsNumList.push(item.number);
         });

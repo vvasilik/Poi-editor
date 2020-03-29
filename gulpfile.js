@@ -1,22 +1,25 @@
-var gulp = require('gulp');
-var concat = require('gulp-concat');
-var autoprefixer = require('gulp-autoprefixer');
+const {src, dest, task, watch, series} = require('gulp');
+const babel = require('gulp-babel');
+const uglify = require('gulp-uglify');
+const rename = require('gulp-rename');
+const concat = require('gulp-concat');
 
+function js() {
+    return src('js/*.js')
+        .pipe(babel())
+        .pipe(uglify())
+        .pipe(rename('bundle.js'))
+        .pipe(dest('bundle/'));
+}
 
-gulp.task('css', function () {
-  gulp.src('css/*.css')
-    .pipe(autoprefixer({
-      browsers: ['> 1%'],
-      cascade: false
-    }))
-    .pipe(concat('bundle.css'))
-    .pipe(gulp.dest('bundle'))
+function css() {
+    return src('css/*.css')
+        .pipe(concat('bundle.css'))
+        .pipe(dest('bundle/'))
+}
+
+task('watch', function() {
+    watch(['js/*', 'css/*'], series([js, css]))
 });
 
-gulp.task('js', function () {
-  gulp.src('js/*.js')
-    .pipe(concat('bundle.js'))
-    .pipe(gulp.dest('bundle'));
-});
-
-gulp.task('default', ['css', 'js']);
+exports.default = series([js, css]);
